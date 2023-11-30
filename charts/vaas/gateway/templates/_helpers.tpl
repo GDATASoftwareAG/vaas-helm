@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "vaas-helm.name" -}}
+{{- define "gateway.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "vaas-helm.fullname" -}}
+{{- define "gateway.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "vaas-helm.chart" -}}
+{{- define "gateway.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "vaas-helm.labels" -}}
-helm.sh/chart: {{ include "vaas-helm.chart" . }}
-{{ include "vaas-helm.selectorLabels" . }}
+{{- define "gateway.labels" -}}
+helm.sh/chart: {{ include "gateway.chart" . }}
+{{ include "gateway.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,18 +45,32 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "vaas-helm.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "vaas-helm.name" . }}
+{{- define "gateway.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "gateway.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "vaas-helm.serviceAccountName" -}}
+{{- define "gateway.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "vaas-helm.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "gateway.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Extracts environment variables from values.yaml and returns a list of key-value pairs.
+*/}}
+{{- define "gateway.extractEnvVars" -}}
+  {{- $envVars := .Values.env | default (list) -}}
+  {{- $result := list -}}
+  {{- range $envVars -}}
+    {{- $key := .name -}}
+    {{- $value := .value -}}
+    {{- $result = $result | append (list $key $value) -}}
+  {{- end -}}
+  {{- $result -}}
+{{- end -}}
