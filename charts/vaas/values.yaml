@@ -97,3 +97,16 @@ autoUpdate:
   networkPolicy:
     enabled: true
     k8sApiPort: 6443
+
+# values.yaml
+ingress:
+  hosts:
+    - name: host1.example.com
+      service:
+        name: service1
+        port: 8080
+    - name: host2.example.com
+      service:
+        name: service2
+        port: 9090
+

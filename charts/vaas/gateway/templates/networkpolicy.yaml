@@ -1,0 +1,114 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "default-service.fullname" . }}
+  labels:
+    {{- include "default-service.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "default-service.selectorLabels" . | nindent 6 }}
+  policyTypes:
+  - Ingress
+  - Egress
+  {{- if .Values.networkPolicy.ingress }}
+  ingress:
+  {{- range .Values.networkPolicy.ingress }}
+    - from:
+    {{- range .blocks }}
+      - ipBlock:
+          cidr: {{ . }}
+    {{- end }}
+    {{- range .pods }}
+      - podSelector:
+          matchLabels:
+          {{- with .instance }}
+            app.kubernetes.io/instance: {{ . }}
+          {{ end }}
+          {{- with .name }}
+            app.kubernetes.io/name: {{ . }}
+          {{ end }}
+      {{- if .namespace }}
+        namespaceSelector: {{ .namespace }}
+      {{- else }}
+        namespaceSelector: {}
+      {{- end }}
+    {{- end }}
+    {{- range .namespaces }}
+      - namespaceSelector: {{- toYaml . | nindent 10 }}
+    {{- end }}
+    {{- if .ports }}
+      ports:
+    {{- range .ports.tcp }}
+      - protocol: TCP
+        port: {{ . }}
+    {{- end }}
+    {{- range .ports.udp }}
+      - protocol: UDP
+        port: {{ . }}
+    {{- end }}
+    {{- end }}
+  {{ end }}
+  {{- end }}
+  egress:
+    - to:
+      - namespaceSelector: {}
+        podSelector:
+          matchLabels:
+            k8s-app: kube-dns
+      ports:
+      - port: 53
+        protocol: UDP
+    - to:
+      - namespaceSelector: {}
+        podSelector:
+          matchLabels:
+            app.kubernetes.io/name: otel-agent
+      ports:
+      - port: 6831
+        protocol: UDP
+    - to:
+      # sentry.gdata.de
+      - ipBlock:
+          cidr: 194.156.84.16/32
+      ports:
+      - port: 443
+        protocol: TCP
+  {{ range .Values.networkPolicy.egress }}
+    - to:
+    {{- range .blocks }}
+      - ipBlock:
+          cidr: {{ . }}
+    {{- end }}
+    {{- range .pods }}
+      - podSelector:
+          matchLabels:
+          {{- with .instance }}
+            app.kubernetes.io/instance: {{ . }}
+          {{ end }}
+          {{- with .name }}
+            app.kubernetes.io/name: {{ . }}
+          {{ end }}
+      {{- if .namespace }}
+        namespaceSelector: {{ .namespace }}
+      {{- else }}
+        namespaceSelector: {}
+      {{- end }}
+    {{- end }}
+    {{- range .namespaces }}
+      - namespaceSelector: {{- toYaml . | nindent 10 }}
+    {{- end }}
+    {{- if .ports }}
+      ports:
+    {{- range .ports.tcp }}
+      - protocol: TCP
+        port: {{ . }}
+    {{- end }}
+    {{- range .ports.udp }}
+      - protocol: UDP
+        port: {{ . }}
+    {{- end }}
+    {{- end }}
+  {{ end }}
+{{- end }}

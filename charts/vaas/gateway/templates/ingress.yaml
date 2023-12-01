@@ -1,9 +1,8 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.gateway.ingress.enabled -}}
 {{- $fullName := include "gateway.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+{{- if and .Values.gateway.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.gateway.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.gateway.ingress.annotations "kubernetes.io/ingress.class" .Values.gateway.ingress.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -18,44 +17,42 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "gateway.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.gateway.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if and .Values.gateway.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.gateway.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.gateway.ingress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range .Values.gateway.ingress.tls }}
     - hosts:
-        {{- range .hosts }}
+        {{- range .Values.gateway.ingress.hosts }}
         - {{ . | quote }}
         {{- end }}
-      secretName: {{ .secretName }}
+      secretName: {{ .Values.gateway.ingress.secretName }}
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    {{- range .Values.gateway.ingress.hosts }}
+    - host: {{ .Values.gateway.ingress.host | quote }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
+          - path: {{ .Values.gateway.ingress.hosts.path }}
             {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .pathType }}
+            pathType: {{ .Values.gateway.ingress.hosts.pathtype }}
             {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ $fullName }}
+                name: {{ .Values.gateway.ingress.hosts.service.name }}
                 port:
-                  number: {{ $svcPort }}
+                  number: {{ .Values.gateway.ingress.hosts.service.port }}
               {{- else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-              {{- end }}
-          {{- end }}
-    {{- end }}
+              serviceName: {{ .Values.gateway.ingress.hosts.service.name }}
+              servicePort: {{ .Values.gateway.ingress.hosts.service.port }}
+              {{- end }}                  
+    {{- end }}    
 {{- end }}

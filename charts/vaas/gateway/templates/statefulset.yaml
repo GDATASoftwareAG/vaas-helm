@@ -1,6 +1,6 @@
-{{- if .Values.gateway.ws.enabled | not }}
+{{- if .Values.gateway.ws.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "gateway.fullname" . }}
   labels:
@@ -61,6 +61,9 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
           ports:
+            - name: ws
+              containerPort: 9090
+              protocol: TCP
             - name: http
               containerPort: 8080
               protocol: TCP
