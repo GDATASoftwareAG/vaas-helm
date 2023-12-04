@@ -1,20 +1,21 @@
-{{- if .Values.networkPolicy.enabled }}
+#TODO: Check if working
+{{- if .Values.gateway.networkPolicy.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ include "default-service.fullname" . }}
+  name: {{ include "gateway.fullname" . }}
   labels:
-    {{- include "default-service.labels" . | nindent 4 }}
+    {{- include "gateway.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
-      {{- include "default-service.selectorLabels" . | nindent 6 }}
+      {{- include "gateway.selectorLabels" . | nindent 6 }}
   policyTypes:
   - Ingress
   - Egress
-  {{- if .Values.networkPolicy.ingress }}
+  {{- if .Values.gateway.networkPolicy.ingress }}
   ingress:
-  {{- range .Values.networkPolicy.ingress }}
+  {{- range .Values.gateway.networkPolicy.ingress }}
     - from:
     {{- range .blocks }}
       - ipBlock:
@@ -36,7 +37,7 @@ spec:
       {{- end }}
     {{- end }}
     {{- range .namespaces }}
-      - namespaceSelector: {{- toYaml . | nindent 10 }}
+      - namespaceSelector: {{- toYaml . servicemonitor| nindent 10 }}
     {{- end }}
     {{- if .ports }}
       ports:
@@ -45,36 +46,17 @@ spec:
         port: {{ . }}
     {{- end }}
     {{- range .ports.udp }}
-      - protocol: UDP
+      - protocol: UDP  name: my-configmap
+
         port: {{ . }}
-    {{- end }}
-    {{- end }}
+            matchLabels:
+              app: "app1"
+    ports:
+    {{- end }}    - to:
+
   {{ end }}
   {{- end }}
   egress:
-    - to:
-      - namespaceSelector: {}
-        podSelector:
-          matchLabels:
-            k8s-app: kube-dns
-      ports:
-      - port: 53
-        protocol: UDP
-    - to:
-      - namespaceSelector: {}
-        podSelector:
-          matchLabels:
-            app.kubernetes.io/name: otel-agent
-      ports:
-      - port: 6831
-        protocol: UDP
-    - to:
-      # sentry.gdata.de
-      - ipBlock:
-          cidr: 194.156.84.16/32
-      ports:
-      - port: 443
-        protocol: TCP
   {{ range .Values.networkPolicy.egress }}
     - to:
     {{- range .blocks }}
