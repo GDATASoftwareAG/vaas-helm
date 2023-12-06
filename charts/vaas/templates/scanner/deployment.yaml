@@ -1,4 +1,4 @@
-{{- if or (.Values.persistence.enabled | not) (eq .Values.persistence.accessMode "ReadWriteMany" ) }}
+{{- if or (.Values.scanner.persistence.enabled | not) (eq .Values.scanner.persistence.accessMode "ReadWriteMany" ) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,16 +7,16 @@ metadata:
     {{- include "scanner.labels" . | nindent 4 }}
 spec:
   strategy:
-    type: {{ .Values.deploymentStrategy }}
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+    type: {{ .Values.scanner.deploymentStrategy }}
+  {{- if not .Values.scanner.autoscaling.enabled }}
+  replicas: {{ .Values.scanner.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "scanner.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.scanner.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -25,33 +25,33 @@ spec:
     spec:
       volumes:
         - name: samples
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.scanner.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ include "vaas.claimName" . }}
         {{- else }}
           emptyDir:
-            sizeLimit: {{ .Values.persistence.size | quote }}
-          {{- if .Values.persistence.memory }}
+            sizeLimit: {{ .Values.scanner.persistence.size | quote }}
+          {{- if .Values.scanner.persistence.memory }}
             medium : "Memory"
           {{- end }}
         {{- end }}
         - name: scan-socket
           emptyDir: {}
-          {{- if .Values.client.containerSecurityContext.enabled }}          
+          {{- if .Values.scanner.client.containerSecurityContext.enabled }}          
         - name: client-tmp
           emptyDir: {}
           {{- end }}
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.scanner.imagePullSecrets }}
       imagePullSecrets: 
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Values.server.name }}
+        - name: {{ .Values.scanner.server.name }}
           env:
             - name: date
               value: "{{ now | unixEpoch }}"
-          image: '{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default "latest" }}'
-          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          image: '{{ .Values.scanner.server.image.repository }}:{{ .Values.scanner.server.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.scanner.server.image.pullPolicy }}
           volumeMounts:
             - name: samples
               mountPath: /tmp/scan
@@ -60,24 +60,24 @@ spec:
             - name: server-var-log
               mountPath: /var/log
           resources:
-            {{- toYaml .Values.resources.server | nindent 12 }}
-        - name: {{ .Values.client.name }}
-          image: '{{ .Values.client.image.repository }}:{{ .Values.client.image.tag | default "latest" }}'
-          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
-          {{- if .Values.client.containerSecurityContext.enabled }}
-          securityContext: {{- omit .Values.client.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+            {{- toYaml .Values.scanner.resources.server | nindent 12 }}
+        - name: {{ .Values.scanner.client.name }}
+          image: '{{ .Values.scanner.client.image.repository }}:{{ .Values.scanner.client.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.scanner.client.image.pullPolicy }}
+          {{- if .Values.scanner.client.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.scanner.client.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: samples
               mountPath: /tmp/scan
             - name: scan-socket
               mountPath: /var/share/run
-              {{- if .Values.client.containerSecurityContext.enabled }}
+              {{- if .Values.scanner.client.containerSecurityContext.enabled }}
             - name: client-tmp
               mountPath: /tmp
               {{- end }}
           resources:
-            {{- toYaml .Values.resources.client | nindent 12 }}
+            {{- toYaml .Values.scanner.resources.client | nindent 12 }}
           ports:
             - name: api
               containerPort: 8080
@@ -94,16 +94,16 @@ spec:
               port: api
             initialDelaySeconds: 5
             periodSeconds: 5     
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}      
-      {{- with .Values.nodeSelector }}
+      terminationGracePeriodSeconds: {{ .Values.scanner.terminationGracePeriodSeconds }}      
+      {{- with .Values.scanner.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.scanner.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.scanner.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

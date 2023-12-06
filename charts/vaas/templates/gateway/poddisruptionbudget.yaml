@@ -9,4 +9,4 @@ spec:
   selector:
     matchLabels:
       {{- include "gateway.selectorLabels" . | nindent 6 }}
-  minAvailable: 1
+  minAvailable: {{ .Values.gateway.podDisruptionBudget.minAvailable }}

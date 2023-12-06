@@ -1,4 +1,4 @@
-{{- if .Values.autoUpdate.enabled -}}
+{{- if .Values.scanner.autoUpdate.enabled -}}
 kind: ServiceAccount
 apiVersion: v1
 metadata:
@@ -41,7 +41,7 @@ spec:
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
-  schedule: "{{ .Values.autoUpdate.schedule }}"
+  schedule: "{{ .Values.scanner.autoUpdate.schedule }}"
   jobTemplate:
     spec:
       backoffLimit: 2
@@ -54,26 +54,26 @@ spec:
         spec:
           serviceAccountName: update
           restartPolicy: Never
-          {{- with .Values.nodeSelector }}
+          {{- with .Values.scanner.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}       
           containers:
             - name: kubectl
-              image: "{{ .Values.autoUpdate.image.registry }}/{{ .Values.autoUpdate.image.repository }}:{{ .Values.autoUpdate.image.tag }}"
-              {{- if .Values.autoUpdate.containerSecurityContext.enabled }}
-              securityContext: {{- omit .Values.autoUpdate.containerSecurityContext "enabled" | toYaml | nindent 16 }}
+              image: "{{ .Values.scanner.autoUpdate.image.registry }}/{{ .Values.scanner.autoUpdate.image.repository }}:{{ .Values.scanner.autoUpdate.image.tag }}"
+              {{- if .Values.scanner.autoUpdate.containerSecurityContext.enabled }}
+              securityContext: {{- omit .Values.scanner.autoUpdate.containerSecurityContext "enabled" | toYaml | nindent 16 }}
               {{- end }}                
               command:
                 - "kubectl"
                 - "rollout"
                 - "restart"
-{{- if and (.Values.persistence.enabled) (eq .Values.persistence.accessMode "ReadWriteOnce" ) }}
+{{- if and (.Values.scanner.persistence.enabled) (eq .Values.scanner.persistence.accessMode "ReadWriteOnce" ) }}
                 - "statefulset/{{ include "scanner.fullname" . }}"
 {{- else }}
                 - "deployment/{{ include "scanner.fullname" . }}"
 {{- end }}
-{{- if .Values.autoUpdate.networkPolicy.enabled }}
+{{- if .Values.scanner.autoUpdate.networkPolicy.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -89,6 +89,6 @@ spec:
   ingress: []
   egress:
     - ports:
-        - port: {{ .Values.autoUpdate.networkPolicy.k8sApiPort }}
+        - port: {{ .Values.scanner.autoUpdate.networkPolicy.k8sApiPort }}
 {{- end }}
 {{- end}}

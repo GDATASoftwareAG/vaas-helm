@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "gateway.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.gateway.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -11,10 +11,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "gateway.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- if .Values.gateway.fullnameOverride }}
+{{- .Values.gateway.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name := default .Chart.Name .Values.gateway.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -54,10 +54,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "gateway.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "gateway.fullname" .) .Values.serviceAccount.name }}
+{{- if .Values.gateway.serviceAccount.create }}
+{{- default (include "gateway.fullname" .) .Values.gateway.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- default "default" .Values.gateway.serviceAccount.name }}
 {{- end }}
 {{- end }}
 
@@ -65,7 +65,7 @@ Create the name of the service account to use
 Extracts environment variables from values.yaml and returns a list of key-value pairs.
 */}}
 {{- define "gateway.extractEnvVars" -}}
-  {{- $envVars := .Values.env | default (list) -}}
+  {{- $envVars := .Values.gateway.env | default (list) -}}
   {{- $result := list -}}
   {{- range $envVars -}}
     {{- $key := .name -}}
@@ -74,3 +74,24 @@ Extracts environment variables from values.yaml and returns a list of key-value 
   {{- end -}}
   {{- $result -}}
 {{- end -}}
+
+{{/*
+Create environment variables to configure gateway container.
+*/}}
+{{- define "gateway.env" }}
+{{- if .Values.gateway.cloudhashlookup.enabled }}
+- name: VerdictAsAService__Url
+  value: {{ .Values.gateway.options.url | quote }}
+- name: VerdictAsAService__TokenUrl
+  value: {{ .Values.gateway.options.tokenurl | quote }}
+- name: VerdictAsAService__Credentials__GrantType
+  value: {{ .Values.gateway.options.credentials.granttype | quote }}
+- name: VerdictAsAService__Credentials__ClientId
+  value: {{ .Values.gateway.options.credentials.clientid | quote }}
+- name: VerdictAsAService__Credentials__ClientSecret
+  {{ toYaml .Values.gateway.options.credentials.clientsecret }}    
+{{- end }}
+{{- if .Values.gateway.env }}
+{{ toYaml .Values.gateway.env }}
+{{- end }}
+{{- end }}

@@ -5,9 +5,9 @@ metadata:
   labels:
     {{- include "scanner.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.scanner.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.scanner.service.port }}
       targetPort: api
       protocol: TCP
       name: http

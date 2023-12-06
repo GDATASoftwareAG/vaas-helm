@@ -1,9 +1,0 @@
-#TODO: Remove once if OIDC Discovery is enabled
-{{- if .Values.gateway.ws.enabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Values.gateway.configMap.name }}
-data:
-{{- toYaml .Values.gateway.configMap. | nindent 2 }}
-{{- end }}

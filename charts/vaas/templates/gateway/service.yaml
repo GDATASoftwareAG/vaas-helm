@@ -11,11 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-      {{- if .Values.gateway.ws.enabled }}
     - port: {{ .Values.gateway.service.ws.port }}
       targetPort: ws
       protocol: TCP
       name: ws
-      {{- end }}  
   selector:
     {{- include "gateway.selectorLabels" . | nindent 4 }}

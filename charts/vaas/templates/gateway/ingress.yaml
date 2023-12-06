@@ -30,30 +30,30 @@ spec:
   tls:
     {{- range .Values.gateway.ingress.tls }}
     - hosts:
-        {{- range .Values.gateway.ingress.hosts }}
+        {{- range .hosts }}
         - {{ . | quote }}
         {{- end }}
-      secretName: {{ .Values.gateway.ingress.secretName }}
+      secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
   rules:
     {{- range .Values.gateway.ingress.hosts }}
-    - host: {{ .Values.gateway.ingress.host | quote }}
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ .Values.gateway.ingress.hosts.path }}
+          - path: {{ .paths }}
             {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .Values.gateway.ingress.hosts.pathtype }}
+            pathType: {{ .pathtype }}
             {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ .Values.gateway.ingress.hosts.service.name }}
+                name: {{ .service.name }}
                 port:
-                  number: {{ .Values.gateway.ingress.hosts.service.port }}
+                  number: {{ .service.port }}
               {{- else }}
-              serviceName: {{ .Values.gateway.ingress.hosts.service.name }}
-              servicePort: {{ .Values.gateway.ingress.hosts.service.port }}
+              serviceName: {{ .service.name }}
+              servicePort: {{ .service.port }}
               {{- end }}                  
     {{- end }}    
 {{- end }}

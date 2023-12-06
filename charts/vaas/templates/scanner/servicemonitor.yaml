@@ -1,4 +1,4 @@
-{{- if .Values.metrics.servicemonitor.enabled }}
+{{- if .Values.scanner.metrics.servicemonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -7,8 +7,8 @@ metadata:
     {{- include "scanner.labels" . | nindent 4 }}
 spec:
   endpoints:
-  - port: {{ .Values.metrics.servicemonitor.port | quote }}
-    path: {{ .Values.metrics.servicemonitor.path }}
+  - port: {{ .Values.scanner.metrics.servicemonitor.port | quote }}
+    path: {{ .Values.scanner.metrics.servicemonitor.path }}
   selector:
     matchLabels:
       {{- include "scanner.selectorLabels" . | nindent 8 }}

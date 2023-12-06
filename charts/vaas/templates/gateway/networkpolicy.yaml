@@ -26,52 +26,10 @@ spec:
           matchLabels:
           {{- with .instance }}
             app.kubernetes.io/instance: {{ . }}
-          {{ end }}
+          {{- end }}
           {{- with .name }}
             app.kubernetes.io/name: {{ . }}
-          {{ end }}
-      {{- if .namespace }}
-        namespaceSelector: {{ .namespace }}
-      {{- else }}
-        namespaceSelector: {}
-      {{- end }}
-    {{- end }}
-    {{- range .namespaces }}
-      - namespaceSelector: {{- toYaml . servicemonitor| nindent 10 }}
-    {{- end }}
-    {{- if .ports }}
-      ports:
-    {{- range .ports.tcp }}
-      - protocol: TCP
-        port: {{ . }}
-    {{- end }}
-    {{- range .ports.udp }}
-      - protocol: UDP  name: my-configmap
-
-        port: {{ . }}
-            matchLabels:
-              app: "app1"
-    ports:
-    {{- end }}    - to:
-
-  {{ end }}
-  {{- end }}
-  egress:
-  {{ range .Values.networkPolicy.egress }}
-    - to:
-    {{- range .blocks }}
-      - ipBlock:
-          cidr: {{ . }}
-    {{- end }}
-    {{- range .pods }}
-      - podSelector:
-          matchLabels:
-          {{- with .instance }}
-            app.kubernetes.io/instance: {{ . }}
-          {{ end }}
-          {{- with .name }}
-            app.kubernetes.io/name: {{ . }}
-          {{ end }}
+          {{- end }}
       {{- if .namespace }}
         namespaceSelector: {{ .namespace }}
       {{- else }}
@@ -92,5 +50,45 @@ spec:
         port: {{ . }}
     {{- end }}
     {{- end }}
-  {{ end }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.gateway.networkPolicy.egress }}
+  egress:
+  {{ range .Values.networkPolicy.egress }}
+    - to:
+    {{- range .blocks }}
+      - ipBlock:
+          cidr: {{ . }}
+    {{- end }}
+    {{- range .pods }}
+      - podSelector:
+          matchLabels:
+          {{- with .instance }}
+            app.kubernetes.io/instance: {{ . }}
+          {{- end }}
+          {{- with .name }}
+            app.kubernetes.io/name: {{ . }}
+          {{- end }}
+      {{- if .namespace }}
+        namespaceSelector: {{ .namespace }}
+      {{- else }}
+        namespaceSelector: {}
+      {{- end }}
+    {{- end }}
+    {{- range .namespaces }}
+      - namespaceSelector: {{- toYaml . | nindent 10 }}
+    {{- end }}
+    {{- if .ports }}
+      ports:
+    {{- range .ports.tcp }}
+      - protocol: TCP
+        port: {{ . }}
+    {{- end }}
+    {{- range .ports.udp }}
+      - protocol: UDP
+        port: {{ . }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- end }}  
 {{- end }}
