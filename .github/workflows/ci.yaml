@@ -1,0 +1,52 @@
+name: Release Charts
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.4.0
+
+      - name: Add deps
+        run: | 
+          helm repo add gdscan https://gdatasoftwareag.github.io/gdscan/
+          helm repo add bitnami https://charts.bitnami.com/bitnami/
+
+      - name: Install python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+        
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.6.0
+
+      - name: Run chart-testing (lint)
+        run: ct lint --validate-maintainers=false --charts charts/vaas
+
+      - name: Run chart-releaser
+        if: github.ref == 'refs/heads/main'
+        uses: helm/chart-releaser-action@v1.5.0
+        env:
+          CR_TOKEN: "${{ secrets.BOT_SECRET }}"
