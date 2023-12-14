@@ -1,0 +1,122 @@
+gateway:
+  ingress:
+    enabled: false
+    annotations: {}
+    hosts:
+      - host: gateway.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            service:
+              name: gateway
+              port: 9090
+      - host: upload.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            service:
+              name: gateway
+              port: 8080              
+    tls: []
+
+  authentication:
+    authority: ""
+
+  nameOverride: ""
+  fullnameOverride: ""
+    
+  networkPolicy:
+    enabled: false
+
+  service:
+    type: ""
+    http:
+      port: 8080
+    ws:
+      port: 9090
+
+  metrics:
+    enabled: false
+    port: 8080
+    path: /metrics
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 20
+    targetCPU: 75
+    metrics:
+
+  podDisruptionBudget:
+    minAvailable: 1    
+
+  replicaCount: 1
+  revisionHistoryLimit: 1
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 0.5
+      memory: 256Mi  
+
+  containerSecurityContext:
+    enabled: false
+
+  image:
+    repository: ghcr.io/gdatasoftwareag/vaas/gateway
+    pullPolicy: Always
+    tag: 1
+
+  cloudhashlookup:
+    enabled: false
+  hashlookup:
+    enabled: false
+    apikey:
+      value: ""
+  usageevents:
+    enabled: false
+  gdscanUrl: "http://gdscan:8080/scan/body"
+  uploadUrl: "http://localhost:8080/upload"
+  options:
+    url: "wss://gateway.production.vaas.gdatasecurity.de"
+    tokenurl: "https://account.gdata.de/realms/vaas-production/protocol/openid-connect/token"
+    credentials:
+      granttype: "ClientCredentials"
+      clientid: ""
+      clientsecret:
+        value: ""
+
+  imagePullSecrets:
+    - name: registry
+
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+gdscan:
+  imagePullSecrets:
+    - name: registry
+
+redis:
+  enabled: true
+  architecture: standalone
+  fullnameOverride: redis
+  auth:
+    enabled: false
+  master:
+    disableCommands: []
+    resources:
+      limits:
+        cpu: "1"
+        memory: 512Mi
+      requests:
+        cpu: 500m
+        memory: 128Mi
+    persistence:
+      enabled: false
+    containerSecurityContext:
+      enabled: true
+      readOnlyRootFilesystem: true
+  networkPolicy:
+    enabled: true

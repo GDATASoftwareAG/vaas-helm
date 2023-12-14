@@ -51,34 +51,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create the name of the service account to use
-*/}}
-{{- define "gateway.serviceAccountName" -}}
-{{- if .Values.gateway.serviceAccount.create }}
-{{- default (include "gateway.fullname" .) .Values.gateway.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.gateway.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
-Extracts environment variables from values.yaml and returns a list of key-value pairs.
-*/}}
-{{- define "gateway.extractEnvVars" -}}
-  {{- $envVars := .Values.gateway.env | default (list) -}}
-  {{- $result := list -}}
-  {{- range $envVars -}}
-    {{- $key := .name -}}
-    {{- $value := .value -}}
-    {{- $result = $result | append (list $key $value) -}}
-  {{- end -}}
-  {{- $result -}}
-{{- end -}}
-
-{{/*
 Create environment variables to configure gateway container.
 */}}
 {{- define "gateway.env" }}
+- name: Authentication__Schemes__Bearer__Authority
+  value: {{.Values.gateway.authentication.authority}} 
+- name: Upload__Endpoint
+  value: {{.Values.gateway.uploadUrl}} 
 {{- if .Values.gateway.cloudhashlookup.enabled }}
 - name: VerdictAsAService__Url
   value: {{ .Values.gateway.options.url | quote }}
@@ -89,9 +68,6 @@ Create environment variables to configure gateway container.
 - name: VerdictAsAService__Credentials__ClientId
   value: {{ .Values.gateway.options.credentials.clientid | quote }}
 - name: VerdictAsAService__Credentials__ClientSecret
-  {{ toYaml .Values.gateway.options.credentials.clientsecret }}    
-{{- end }}
-{{- if .Values.gateway.env }}
-{{ toYaml .Values.gateway.env }}
+  {{ toYaml .Values.gateway.options.credentials.clientsecret }}
 {{- end }}
 {{- end }}

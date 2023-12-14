@@ -27,19 +27,17 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-          {{- if .Values.gateway.containerSecurityContext.enabled }}
         - name: gateway-tmp
           emptyDir: {}
-          {{- end }}
       containers:
         - name: {{ include "gateway.name" . }}
           securityContext:
-            {{- toYaml .Values.gateway.containerSecurityContext | nindent 12 }}
+            readOnlyRootFilesystem: true
           image: '{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag | default "latest" }}'
           imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
           volumeMounts:
           - mountPath: /tmp
-            name: gateway-temp
+            name: gateway-tmp
           env: 
             {{- include "gateway.env" . | nindent 12 }}
           ports:

@@ -1,4 +1,3 @@
-#TODO: Check if Values in range are correct
 {{- if .Values.gateway.ingress.enabled -}}
 {{- $fullName := include "gateway.fullname" . -}}
 {{- if and .Values.gateway.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
@@ -30,7 +29,7 @@ spec:
   tls:
     {{- range .Values.gateway.ingress.tls }}
     - hosts:
-        {{- range .hosts }}
+        {{- range .hosts }} 
         - {{ . | quote }}
         {{- end }}
       secretName: {{ .secretName }}
@@ -41,9 +40,10 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ .paths }}
+          {{- range .paths }}
+          - path: {{ .path }}
             {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .pathtype }}
+            pathType: {{ .pathType }}
             {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
@@ -54,6 +54,7 @@ spec:
               {{- else }}
               serviceName: {{ .service.name }}
               servicePort: {{ .service.port }}
-              {{- end }}                  
-    {{- end }}    
+              {{- end }}
+          {{- end }}
+    {{- end }}
 {{- end }}
