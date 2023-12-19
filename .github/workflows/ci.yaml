@@ -30,7 +30,7 @@ jobs:
           version: v3.4.0
 
       - name: Add deps
-        run: | 
+        run: |
           helm repo add gdscan https://gdatasoftwareag.github.io/gdscan/
           helm repo add bitnami https://charts.bitnami.com/bitnami/
 
@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.7
-        
+
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.6.0
 

@@ -16,7 +16,7 @@ gateway:
             pathType: ImplementationSpecific
             service:
               name: gateway
-              port: 8080              
+              port: 8080
     tls: []
 
   authentication:
@@ -24,7 +24,7 @@ gateway:
 
   nameOverride: ""
   fullnameOverride: ""
-    
+
   networkPolicy:
     enabled: false
 
@@ -51,7 +51,7 @@ gateway:
     metrics:
 
   podDisruptionBudget:
-    minAvailable: 1    
+    minAvailable: 1
 
   replicaCount: 1
   revisionHistoryLimit: 1
@@ -60,7 +60,7 @@ gateway:
       memory: 512Mi
     requests:
       cpu: 0.5
-      memory: 256Mi  
+      memory: 256Mi
 
   containerSecurityContext:
     enabled: false
