@@ -1,0 +1,15 @@
+{{- if .Values.gateway.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "gateway.fullname" . }}
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  endpoints:
+  - port: {{ .Values.gateway.metrics.port | quote }}
+    path: {{ .Values.gateway.metrics.path }}
+  selector:
+    matchLabels:
+      {{- include "gateway.selectorLabels" . | nindent 8 }}
+{{- end }}

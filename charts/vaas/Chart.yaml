@@ -1,0 +1,17 @@
+apiVersion: v2
+name: vaas
+version: 1.0.0
+description: Deployment of a Verdict-as-a-Service on-premise instance
+maintainers:
+  - name: G DATA CyberDefense AG
+    email: oem@gdata.de
+type: application
+dependencies:
+  - name: redis
+    version: 18.1.5
+    condition: redis.enabled
+    repository: https://charts.bitnami.com/bitnami
+  - name: gdscan
+    version: 1.4.2
+    condition: gdscan.enabled
+    repository: https://gdatasoftwareag.github.io/gdscan/
