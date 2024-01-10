@@ -1,3 +1,25 @@
+global:
+  imagePullSecrets: []
+  vaasImageRegistry: "ghcr.io/gdatasoftwareag"
+
+mini-identity-provider:
+  enabled: true
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/x-forwarded-prefix: "/auth"
+    hosts:
+    - host: vaas
+      paths:
+      - path: /auth(/|$)(.*)
+        pathType: ImplementationSpecific
+        service:
+          name: provider
+          port: 8080           
+    tls: []     
+
 gateway:
   ingress:
     enabled: false
@@ -88,18 +110,10 @@ gateway:
       clientid: ""
       clientsecret:
         value: ""
-
-  imagePullSecrets:
-    - name: registry
-
   podAnnotations: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
-
-gdscan:
-  imagePullSecrets:
-    - name: registry
 
 redis:
   enabled: true
