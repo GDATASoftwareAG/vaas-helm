@@ -56,6 +56,8 @@ Create environment variables to configure gateway container.
 {{- define "gateway.env" }}
 - name: Authentication__Schemes__Bearer__Authority
   value: {{.Values.gateway.authentication.authority}} 
+- name: Authentication__Schemes__Bearer__RequireHttpsMetadata
+  value: "false"
 - name: Upload__Endpoint
   value: {{.Values.gateway.uploadUrl}} 
 {{- if .Values.gateway.cloudhashlookup.enabled }}
