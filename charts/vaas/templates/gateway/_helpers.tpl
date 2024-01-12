@@ -59,7 +59,9 @@ Create environment variables to configure gateway container.
 - name: Authentication__Schemes__Bearer__RequireHttpsMetadata
   value: "false"
 - name: Upload__Endpoint
-  value: {{.Values.gateway.uploadUrl}} 
+  value: {{.Values.gateway.uploadUrl}}
+- name: JwtSettings__Secret
+  value: {{ randAlphaNum 64 }}
 {{- if .Values.gateway.cloudhashlookup.enabled }}
 - name: VerdictAsAService__Url
   value: {{ .Values.gateway.options.url | quote }}

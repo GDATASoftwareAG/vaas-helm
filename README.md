@@ -38,13 +38,62 @@ helm repo add vaas https://gdatasoftwareag.github.io/vaas/
 helm install vaas gdatasoftware/vaas -f values.yaml
 ```
 
-TODO: 
-
 ### Updating Verdict-as-a-Service
 
 ```bash
 helm repo update
 helm upgrade gdscan  gdscan/gdscan -f values.yaml
+```
+
+# Verdict-as-a-Service on-premise
+
+## Getting started
+
+### Deploy Verdict-as-a-Service in a Minikube test-environment
+
+* Start Minikube:
+
+```
+minikube start --cpus="6" --memory="6g" --addons ingress
+```
+
+* Check your Minikube IP: ```minikube ip```
+
+* Add Minikube IP to your /etc/hosts:
+
+```
+<your-minikube-ip> vaas
+```
+
+* Run ```minikube dashboard```
+
+*  Deploy the VaaS helm chart: ```./helm.sh```
+
+* Check the "Workload status" in the Minikube dashboard and wait until it is green
+
+### Use Verdict-as-a-Service with the Java SDK
+
+* Make sure that Java 17 & Gradle is installed
+
+* Extract Client secret with this command
+
+```
+export CLIENT_SECRET=$(kubectl get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d)
+```
+
+* Set these environment variables for testing your local instance
+
+```
+export CLIENT_ID=vaas
+export SCAN_PATH=<filepath-to-scan>
+export VAAS_URL=ws://vaas/ws
+export TOKEN_URL=https://vaas/auth/protocol/openid-connect/token
+```
+
+* Execute FileScan example in Java SDK example folder
+
+```
+./gradlew fileScan
 ```
 
 ## Configuring Verdict-as-a-Service
@@ -98,24 +147,6 @@ helm upgrade gdscan  gdscan/gdscan -f values.yaml
 | `tolerations` | Tolerations for pods | `[]` |
 | `affinity` | Affinity settings for pods | `{}` |
 
-
-
-## TODO
-
-### Getting started
-
-To install a development environment:
-
-* Minikube
-* helm add repo
-* helm login
-* Create values.yaml with
-
-imagePullSecrets: ONLY 1
-
-* helm install
-* NOTES.txt include script lines to get URLs and credentials link to SDKs
-  * NodeIP
 
 ### Production environment
 

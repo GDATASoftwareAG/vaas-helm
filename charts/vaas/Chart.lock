@@ -5,5 +5,8 @@ dependencies:
 - name: gdscan
   repository: https://gdatasoftwareag.github.io/gdscan/
   version: 1.4.2
-digest: sha256:51e3b55c0a6db37616d9111b7f10212ee76b34e9650df2ea8d20c1f505cdc45d
-generated: "2023-12-07T11:20:19.544076537+01:00"
+- name: mini-identity-provider
+  repository: oci://ghcr.io/gdatasoftwareag
+  version: 0.1.11
+digest: sha256:52da0f8e6f27d1eb562284e2f076b2e0226a8f93d0b56be8e438ed61d5fcbfa0
+generated: "2024-01-12T13:29:22.640621206+01:00"
