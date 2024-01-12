@@ -9,7 +9,7 @@ mini-identity-provider:
   issuer: "http://vaas/auth"
   enabled: true
   ingress:
-    className: nginx
+    className: ""
     enabled: true
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
