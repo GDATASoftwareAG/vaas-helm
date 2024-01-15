@@ -1,4 +1,4 @@
 chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami/
   - gdscan=https://gdatasoftwareag.github.io/gdscan/
-  - oci-registry=oci://ghcr.io/gdatasoftwareag
+  - oci-registry=oci://ghcr.io/gdatasoftwareag/
