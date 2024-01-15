@@ -10,6 +10,9 @@ on:
     branches:
       - main
 
+env:
+  HELM_EXPERIMENTAL_OCI: 1
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -43,7 +46,7 @@ jobs:
         uses: helm/chart-testing-action@v2.6.0
 
       - name: Run chart-testing (lint)
-        run: ct lint --validate-maintainers=false --charts charts/vaas
+        run: ct lint --chart-repos oci-registry=oci://ghcr.io/gdatasoftwareag --validate-maintainers=false --charts charts/vaas
 
       - name: Run chart-releaser
         if: github.ref == 'refs/heads/main'
