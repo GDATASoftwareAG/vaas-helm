@@ -23,6 +23,16 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "gateway.imagePullSecrets" -}}
+imagePullSecrets:
+  {{- range .Values.global.imagePullSecrets }}
+  - name: {{ . }}
+  {{- end }}
+  {{- range .Values.imagePullSecrets }}
+  - name: {{ . }}
+  {{- end }}
+{{- end -}}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}

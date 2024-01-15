@@ -6,25 +6,17 @@ Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
 1. Create a minimal values.yaml file:
 
-The token has to be set in the `secret.dockerconfigjson` variable on deployment.
+The token has to be set in the `global.secret.dockerconfigjson` variable on deployment.
 
 ```yaml
 # values.yaml
-secret: 
+global:
+  secret: 
     dockerconfigjson: $$_BASE64_ENCODED_JSON_CONTAINING_TOKEN_$$
 ```
 
-Example of the dockerconfigjson
+Copy the `secret.yaml` you got from G DATA to the template folder.
 
-```json
-{
-    "auths": {
-            "ghcr.io": {
-                    "auth": "$$_BASE64_ENCODED_USERNAME_AND_TOKEN_$$"
-            }
-    }
-}
-```
 
 2. Add the helm repository:
 
@@ -42,7 +34,7 @@ helm install vaas gdatasoftware/vaas -f values.yaml
 
 ```bash
 helm repo update
-helm upgrade gdscan  gdscan/gdscan -f values.yaml
+helm upgrade vaas gdatasoftware/vaas -f values.yaml
 ```
 
 # Verdict-as-a-Service on-premise
@@ -87,7 +79,7 @@ export CLIENT_SECRET=$(kubectl get secret -n vaas vaas-client-secret -o jsonpath
 export CLIENT_ID=vaas
 export SCAN_PATH=<filepath-to-scan>
 export VAAS_URL=ws://vaas/ws
-export TOKEN_URL=https://vaas/auth/protocol/openid-connect/token
+export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
 ```
 
 * Execute FileScan example in Java SDK example folder
@@ -107,19 +99,11 @@ export TOKEN_URL=https://vaas/auth/protocol/openid-connect/token
 | `authentication.authority` | Authority for authentication | `""` |
 | `nameOverride` | Overrides the application name | `""` |
 | `fullnameOverride` | Overrides the full name | `""` |
-| `networkPolicy.enabled` | Enable/Disable the Network Policy | `false` |
+| `networkPolicy.enabled` | Enable/Disable the default Network Policy | `false` |
 | `secret.dockerconfigjson` | Docker authentication configuration | `""` |
 | `service.type` | Type of Kubernetes service | `""` |
 | `service.http.port` | HTTP port for the service | `8080` |
 | `service.ws.port` | WebSocket port for the service | `9090` |
-| `metrics.enabled` | Enable/Disable metrics | `false` |
-| `metrics.port` | Port for metrics | `8080` |
-| `metrics.path` | Path for metrics | `/metrics` |
-| `autoscaling.enabled` | Enable/Disable automatic scaling | `false` |
-| `autoscaling.minReplicas` | Minimum number of replicas | `2` |
-| `autoscaling.maxReplicas` | Maximum number of replicas | `20` |
-| `autoscaling.targetCPU` | Target CPU usage for automatic scaling | `75` |
-| `autoscaling.metrics` | Metrics for automatic scaling | |
 | `podDisruptionBudget.minAvailable` | Minimum available pods in case of disruption | `1` |
 | `replicaCount` | Number of replicas | `1` |
 | `revisionHistoryLimit` | Number of revisions in history | `1` |
@@ -127,46 +111,63 @@ export TOKEN_URL=https://vaas/auth/protocol/openid-connect/token
 | `resources.requests.cpu` | Requested CPU performance | `0.5` |
 | `resources.requests.memory` | Requested memory usage | `256Mi` |
 | `containerSecurityContext.enabled` | Enable/Disable container security context | `false` |
-| `image.repository` | Docker image repository | `ghcr.io/gdatasoftwareag/vaas/gateway` |
-| `image.pullPolicy` | Docker image pull policy | `Always` |
-| `image.tag` | Docker image tag | `1` |
 | `cloudhashlookup.enabled` | Enable/Disable cloud hash lookup | `false` |
-| `hashlookup.enabled` | Enable/Disable local hash lookup | `false` |
-| `hashlookup.apikey.value` | API key for local hash lookup | `""` |
-| `usageevents.enabled` | Enable/Disable usage events | `false` |
-| `gdscanUrl` | URL for the GDScan service | `"http://gdscan:8080/scan/body"` |
 | `uploadUrl` | URL for the upload service | `"http://localhost:8080/upload"` |
-| `options.url` | URL for options | `"wss://gateway.production.vaas.gdatasecurity.de"` |
-| `options.tokenurl` | Token URL for options | `"https://account.gdata.de/realms/vaas-production/protocol/openid-connect/token"` |
-| `options.credentials.granttype` | Grant type for options | `"ClientCredentials"` |
-| `options.credentials.clientid` | Client ID for options | `""` |
-| `options.credentials.clientsecret.value` | Client secret for options | `""` |
 | `imagePullSecrets` | List of image pull secrets | `- name: registry` |
 | `podAnnotations` | Annotations for pods | `{}` |
-| `nodeSelector` | Node selector for pods | `{}` |
+| `nodeSelector` | Node labels for pod assignment | `{}` |
+| `gdscan.nodeSelector` | gdscan Node labels for pod assignment | `{}` |
+| `mini-identity-provider.nodeSelector` | mini-identity-provider Node labels for pod assignment | `{}` |
 | `tolerations` | Tolerations for pods | `[]` |
 | `affinity` | Affinity settings for pods | `{}` |
 
 
 ### Production environment
 
-In production you will have to configure stuff.
+In production you will have to configure a few values.
 
 #### Ingress
+The default hostname is "vaas". To change it and provide a tls configuration, add this to your values.yaml:
 
-ingress:
-  enable: true (affects gateway, midp)
-  host:
-    vaas.local
-      auth
-      upload
-      verdicts
-      ws
+```yaml
+mini-identity-provider:
+  issuer: "http://vaas/auth"
+  ingress:
+    hosts:
+    - host: vaas
+      paths:
+      - path: /auth(/|$)(.*)
+        pathType: ImplementationSpecific
+        service:
+          name: provider
+          port: 8080
+    tls: []
 
-#### Scale workers
+gateway:
+  ingress:
+    hosts:
+      - host: vaas
+        paths:
+          - path: /ws
+            pathType: ImplementationSpecific
+            service:
+              name: gateway
+              port: 9090
+      - host: vaas
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            service:
+              name: gateway
+              port: 8080
+    tls: []
+  uploadUrl: "http://vaas/upload"
+```
 
-#### Deny worker intra cluster access (no forUrl)
+Replace the "vaas" with your hostname in the following values:
 
-#### NodeSelectors
-
-####
+* mini-identity-provider.issuer
+* mini-identity-provider.ingress.hosts.0.host
+* gateway.ingress.0.host
+* gateway.ingress.1.host
+* gateway.uploadUrl

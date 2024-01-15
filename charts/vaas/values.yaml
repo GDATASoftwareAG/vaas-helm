@@ -1,10 +1,3 @@
-global:
-  imagePullSecrets: 
-    - name: registry
-  vaasImageRegistry: "ghcr.io/gdatasoftwareag"
-  host: &vaasHost vaas
-  versionTag: &versionTag production-latest
-
 mini-identity-provider:
   issuer: "http://vaas/auth"
   enabled: true
@@ -16,7 +9,7 @@ mini-identity-provider:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
       nginx.ingress.kubernetes.io/x-forwarded-prefix: "/auth"
     hosts:
-    - host: *vaasHost
+    - host: vaas
       paths:
       - path: /auth(/|$)(.*)
         pathType: ImplementationSpecific
@@ -28,15 +21,12 @@ mini-identity-provider:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider
     pullPolicy: Always
-    tag: latest
+    tag: 0.1.4
 
   service:
     type: ClusterIP
     http:
       port: 8080
-
-  secret:
-    dockerconfigjson: ""
 
   networkPolicy:
     enabled: true
@@ -52,14 +42,14 @@ gateway:
     className: ""
     annotations: {}
     hosts:
-      - host: *vaasHost
+      - host: vaas
         paths:
           - path: /ws
             pathType: ImplementationSpecific
             service:
               name: gateway
               port: 9090
-      - host: *vaasHost
+      - host: vaas
         paths:
           - path: /
             pathType: ImplementationSpecific
@@ -76,9 +66,6 @@ gateway:
 
   networkPolicy:
     enabled: true
-
-  secret:
-    dockerconfigjson: ""
 
   service:
     type: ClusterIP
@@ -117,22 +104,13 @@ gateway:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/gateway
     pullPolicy: Always
-    # TODO: Push to production-latest and change to anchor
     tag: 1.0.2
 
   cloudhashlookup:
     enabled: false
 
-  # Do not touch. Really. Just don't.
-  # This block is only for G DATA's internal usage.
-  hashlookup:
-    enabled: false
-    apikey:
-      value: ""
-  usageevents:
-    enabled: false
-  gdscanUrl: "http://gdscan:8080/scan/body"
-  uploadUrl: "http://vaas/upload"
+  uploadUrl: "http://vaas/upload"  
+
   options:
     url: "wss://gateway.production.vaas.gdatasecurity.de"
     tokenurl: "https://account.gdata.de/realms/vaas-production/protocol/openid-connect/token"
@@ -148,7 +126,16 @@ gateway:
   tolerations: []
   affinity: {}
 
-#TODO: ImagePullSecret from Global
+  # This block is only for G DATA's internal usage.
+  hashlookup:
+    enabled: false
+    apikey:
+      value: ""
+  usageevents:
+    enabled: false
+  gdscanUrl: "http://gdscan:8080/scan/body"
+
+
 gdscan:
   replicaCount: 1
   deploymentStrategy: "Recreate"
@@ -157,7 +144,7 @@ gdscan:
     image:
       repository: ghcr.io/gdatasoftwareag/vaas/scanserver
       pullPolicy: Always
-      tag: *versionTag
+      tag: 1.9.4
     containerSecurityContext:
       enabled: false
   client:
@@ -165,7 +152,7 @@ gdscan:
     image:
       repository: ghcr.io/gdatasoftwareag/vaas/scanner
       pullPolicy: Always
-      tag: *versionTag
+      tag: 1.9.4
     containerSecurityContext:
       enabled: false
   terminationGracePeriodSeconds: 30
@@ -184,18 +171,6 @@ gdscan:
       enabled: false
       port: 8080
       path: /metrics
-
-  #TODO: Do we need Ingress for Gdscan?
-  ingress:
-    enabled: false
-    className: ""
-    annotations: {}
-    hosts:
-      - host: gdscan.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
 
   resources:
     server:
@@ -237,7 +212,6 @@ gdscan:
     containerSecurityContext:
       enabled: false
     enabled: true
-    # every hour
     schedule: "0 * * * *"
     networkPolicy:
       enabled: true

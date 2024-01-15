@@ -22,10 +22,7 @@ spec:
       labels:
         {{- include "gateway.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.gateway.imagePullSecrets }}
-      imagePullSecrets: 
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "gateway.imagePullSecrets" . | nindent 6 }}
       volumes:
         - name: gateway-tmp
           emptyDir: {}
