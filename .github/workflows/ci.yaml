@@ -32,11 +32,6 @@ jobs:
         with:
           version: v3.4.0
 
-      - name: Add deps
-        run: |
-          helm repo add gdscan https://gdatasoftwareag.github.io/gdscan/
-          helm repo add bitnami https://charts.bitnami.com/bitnami/
-
       - name: Install python
         uses: actions/setup-python@v4
         with:
@@ -46,7 +41,7 @@ jobs:
         uses: helm/chart-testing-action@v2.6.0
 
       - name: Run chart-testing (lint)
-        run: ct lint --chart-repos oci-registry=oci://ghcr.io/gdatasoftwareag --validate-maintainers=false --charts charts/vaas
+        run: ct lint --config .github/chart-testing-config.yaml --validate-maintainers=false --charts charts/vaas
 
       - name: Run chart-releaser
         if: github.ref == 'refs/heads/main'
