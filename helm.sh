@@ -7,6 +7,7 @@ fi
 
 VALUES_FILE=$1
 
+helm dep up charts/vaas
 helm lint charts/vaas -f $VALUES_FILE
 helm template charts/vaas -f $VALUES_FILE --debug
 helm uninstall vaas -n vaas

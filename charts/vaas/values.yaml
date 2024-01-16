@@ -65,7 +65,7 @@ gateway:
     authority: http://provider:8080/
 
   nameOverride: ""
-  fullnameOverride: ""
+  fullnameOverride: "gateway"
 
   networkPolicy:
     enabled: true
