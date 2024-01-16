@@ -38,7 +38,7 @@ jobs:
           python-version: 3.7
 
       - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.6.0
+        uses: helm/chart-testing-action@v2.6.1
 
       - name: Run chart-testing (lint)
         run: ct lint --config .github/chart-testing-config.yaml --validate-maintainers=false --charts charts/vaas

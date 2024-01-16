@@ -28,8 +28,8 @@ imagePullSecrets:
   {{- range .Values.global.imagePullSecrets }}
   - name: {{ . }}
   {{- end }}
-  {{- range .Values.imagePullSecrets }}
-  - name: {{ . }}
+  {{- if .Values.imagePullSecret }}
+  - name: {{ .Release.Name }}-registry-secret
   {{- end }}
 {{- end -}}
 

@@ -1,3 +1,6 @@
+global:
+  imagePullSecrets: []
+
 mini-identity-provider:
   issuer: "http://vaas/auth"
   enabled: true
