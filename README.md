@@ -8,7 +8,7 @@ Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
 The token has to be set in the `global.secret.dockerconfigjson` and `gdscan.secret.dockerconfigjson` variable on deployment.
 
-`values`-File for a minimum example Deployment.
+`values`-File for a minimum example deployment.
 ```yaml
 global:
   imagePullSecrets:
@@ -19,9 +19,9 @@ global:
 gdscan:
   secret:
     dockerconfigjson: "$$_BASE64_ENCODED_JSON_CONTAINING_TOKEN_$$"
+```
 
 Copy the `secret.yaml` you got from G DATA to the template folder.
-
 
 2. Add the helm repository:
 
