@@ -47,4 +47,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: helm/chart-releaser-action@v1.5.0
         env:
-          CR_TOKEN: "${{ secrets.BOT_SECRET }}"
+          CR_TOKEN: "${{ secrets.CR_TOKEN }}"

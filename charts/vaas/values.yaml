@@ -120,7 +120,6 @@ gateway:
     credentials:
       granttype: "ClientCredentials"
       clientid: ""
-      # TODO: Secrify it
       clientsecret:
         value: ""
 
