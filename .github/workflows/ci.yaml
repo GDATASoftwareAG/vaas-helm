@@ -48,7 +48,7 @@ jobs:
         with:
           name: vaas
           repository: gdatasoftwareag/charts
-          tag: 1.0.0
+          tag: 1.0.1
           path: charts/vaas
           registry: ghcr.io
           registry_username: ${{ secrets.REGISTRY_USERNAME }}
