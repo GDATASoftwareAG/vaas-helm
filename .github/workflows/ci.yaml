@@ -43,16 +43,10 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --config .github/chart-testing-config.yaml --validate-maintainers=false --charts charts/vaas
 
-      # - name: Run chart-releaser
-      #   if: github.ref == 'refs/heads/main'
-      #   uses: helm/chart-releaser-action@v1.6.0
-      #   env:
-      #     CR_TOKEN: "${{ secrets.CR_TOKEN }}"
-
       - name: Push chart
         uses: appany/helm-oci-chart-releaser@v0.4.1
         with:
-          name: vaas
+          name: charts/vaas
           repository: gdatasoftwareag
           tag: 1.0.0
           path: charts/vaas
