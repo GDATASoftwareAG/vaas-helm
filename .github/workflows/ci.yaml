@@ -41,7 +41,7 @@ jobs:
         uses: helm/chart-testing-action@v2.6.0
 
       - name: Run chart-testing (lint)
-        run: ct lint --config .github/chart-testing-config.yaml --helm-repo-extra-args 'oci-registry=--username GdataGithubBot --password ${{ secrets.GHRC_PASSWORD }}' --validate-maintainers=false --charts charts/vaas
+        run: ct lint --config .github/chart-testing-config.yaml --validate-maintainers=false --charts charts/vaas
 
       - name: Run chart-releaser
         if: github.ref == 'refs/heads/main'
