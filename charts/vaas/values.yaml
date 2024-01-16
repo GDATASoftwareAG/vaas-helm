@@ -112,7 +112,7 @@ gateway:
   cloudhashlookup:
     enabled: false
 
-  uploadUrl: "http://vaas/upload"  
+  uploadUrl: "http://vaas/upload"
 
   options:
     url: "wss://gateway.production.vaas.gdatasecurity.de"
