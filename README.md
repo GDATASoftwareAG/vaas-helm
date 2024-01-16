@@ -6,9 +6,10 @@ Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
 1. Create a minimal values.yaml file:
 
-The token has to be set in the `global.secret.dockerconfigjson` and `gdscan.secret.dockerconfigjson` variable on deployment.
+To access the VaaS docker containers, the image pull secret has to be set in the `global.secret.dockerconfigjson` and `gdscan.secret.dockerconfigjson` variable.
 
-`values`-File for a minimum example deployment.
+`values`-File for a minimum example deployment:
+
 ```yaml
 global:
   imagePullSecrets:
@@ -21,25 +22,16 @@ gdscan:
     dockerconfigjson: "$$_BASE64_ENCODED_JSON_CONTAINING_TOKEN_$$"
 ```
 
-Copy the `secret.yaml` you got from G DATA to the template folder.
-
-2. Add the helm repository:
+2. Install Verdict-as-a-Service:
 
 ```bash
-helm repo add vaas https://gdatasoftwareag.github.io/vaas/
-```
-
-3. Install Verdict-as-a-Service:
-
-```bash
-helm install vaas gdatasoftware/vaas -f values.yaml
+helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
 ```
 
 ### Updating Verdict-as-a-Service
 
 ```bash
-helm repo update
-helm upgrade vaas gdatasoftware/vaas -f values.yaml
+helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
 ```
 
 # Verdict-as-a-Service on-premise
