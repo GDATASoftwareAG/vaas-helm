@@ -167,7 +167,7 @@ gdscan:
         memory: 4Gi
       requests:
         cpu: '1'
-     
+
   terminationGracePeriodSeconds: 30
 
   nameOverride: ""
