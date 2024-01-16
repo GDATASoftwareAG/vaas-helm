@@ -1,0 +1,241 @@
+global:
+  imagePullSecrets: []
+
+mini-identity-provider:
+  issuer: "http://vaas/auth"
+  enabled: true
+  ingress:
+    className: ""
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/x-forwarded-prefix: "/auth"
+    hosts:
+    - host: vaas
+      paths:
+      - path: /auth(/|$)(.*)
+        pathType: ImplementationSpecific
+        service:
+          name: provider
+          port: 8080
+    tls: []
+
+  image:
+    repository: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider
+    pullPolicy: Always
+    tag: 0.1.4
+
+  service:
+    type: ClusterIP
+    http:
+      port: 8080
+
+  networkPolicy:
+    enabled: true
+
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+gateway:
+  ingress:
+    enabled: true
+    className: ""
+    annotations: {}
+    hosts:
+      - host: vaas
+        paths:
+          - path: /ws
+            pathType: ImplementationSpecific
+            service:
+              name: gateway
+              port: 9090
+      - host: vaas
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            service:
+              name: gateway
+              port: 8080
+    tls: []
+
+  authentication:
+    authority: http://provider:8080/
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  networkPolicy:
+    enabled: true
+
+  service:
+    type: ClusterIP
+    http:
+      port: 8080
+    ws:
+      port: 9090
+
+  metrics:
+    enabled: false
+    port: 8080
+    path: /metrics
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 20
+    targetCPU: 75
+    metrics:
+
+  podDisruptionBudget:
+    minAvailable: 1
+
+  replicaCount: 1
+  revisionHistoryLimit: 1
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 0.5
+      memory: 256Mi
+
+  containerSecurityContext:
+    enabled: false
+
+  image:
+    repository: ghcr.io/gdatasoftwareag/vaas/gateway
+    pullPolicy: Always
+    tag: 1.0.2
+
+  cloudhashlookup:
+    enabled: false
+
+  uploadUrl: "http://vaas/upload"
+
+  options:
+    url: "wss://gateway.production.vaas.gdatasecurity.de"
+    tokenurl: "https://account.gdata.de/realms/vaas-production/protocol/openid-connect/token"
+    credentials:
+      granttype: "ClientCredentials"
+      clientid: ""
+      clientsecret:
+        value: ""
+
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+  # This block is only for G DATA's internal usage.
+  hashlookup:
+    enabled: false
+    apikey:
+      value: ""
+  usageevents:
+    enabled: false
+  gdscanUrl: "http://gdscan:8080/scan/body"
+
+
+gdscan:
+  replicaCount: 1
+  deploymentStrategy: "Recreate"
+  server:
+    name: server
+    image:
+      repository: ghcr.io/gdatasoftwareag/vaas/scanserver
+      pullPolicy: Always
+      tag: 1.9.4
+    containerSecurityContext:
+      enabled: false
+  client:
+    name: client
+    image:
+      repository: ghcr.io/gdatasoftwareag/vaas/scanner
+      pullPolicy: Always
+      tag: 1.9.4
+    containerSecurityContext:
+      enabled: false
+  terminationGracePeriodSeconds: 30
+
+  nameOverride: ""
+  fullnameOverride: "gdscan"
+
+  podAnnotations: {}
+
+  service:
+    type: "ClusterIP"
+    port: 8080
+
+  metrics:
+    servicemonitor:
+      enabled: false
+      port: 8080
+      path: /metrics
+
+  resources:
+    server:
+      limits:
+        memory: 2Gi
+      requests:
+        cpu: 0.15
+        memory: 2Gi
+    client:
+      limits:
+        memory: 1Gi
+      requests:
+        cpu: 1
+        memory: 512Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 20
+    targetCPU: 75
+    metrics:
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  persistence:
+    enabled: true
+    size: 2Gi
+    accessMode: ReadWriteOnce
+
+  autoUpdate:
+    image:
+      registry: docker.io
+      repository: bitnami/kubectl
+      tag: latest
+    containerSecurityContext:
+      enabled: false
+    enabled: true
+    schedule: "0 * * * *"
+    networkPolicy:
+      enabled: true
+      k8sApiPort: 6443
+
+redis:
+  enabled: true
+  architecture: standalone
+  fullnameOverride: redis
+  auth:
+    enabled: false
+  master:
+    disableCommands: []
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+    persistence:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
+  networkPolicy:
+    enabled: true

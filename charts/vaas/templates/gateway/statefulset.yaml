@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "gateway.fullname" . }}
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "gateway.fullname" . }}
+  {{- if not .Values.gateway.autoscaling.enabled }}
+  replicas: {{ .Values.gateway.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.gateway.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "gateway.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.gateway.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "gateway.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- include "gateway.imagePullSecrets" . | nindent 6 }}
+      volumes:
+        - name: gateway-tmp
+          emptyDir: {}
+      containers:
+        - name: {{ include "gateway.name" . }}
+          securityContext:
+            readOnlyRootFilesystem: true
+          image: '{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
+          volumeMounts:
+          - mountPath: /tmp
+            name: gateway-tmp
+          env: 
+            {{- include "gateway.env" . | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.gateway.service.http.port }}
+              protocol: TCP
+            - name: ws
+              containerPort: {{ .Values.gateway.service.ws.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.gateway.resources | nindent 12 }}
+      {{- with .Values.gateway.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gateway.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gateway.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
