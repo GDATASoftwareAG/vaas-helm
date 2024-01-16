@@ -51,7 +51,7 @@ helm upgrade vaas gdatasoftware/vaas -f values.yaml
 * Start Minikube:
 
 ```
-minikube start --cpus="6" --memory="6g" --addons ingress
+minikube start --cpus="6" --memory="10g" --addons ingress
 ```
 
 * Check your Minikube IP: ```minikube ip```

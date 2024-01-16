@@ -146,17 +146,28 @@ gdscan:
     image:
       repository: ghcr.io/gdatasoftwareag/vaas/scanserver
       pullPolicy: Always
-      tag: 1.9.4
+      tag: 1.9.5
     containerSecurityContext:
       enabled: false
+    resources:
+      limits:
+        memory: 2.5Gi
+      requests:
+        cpu: '1'
   client:
     name: client
     image:
       repository: ghcr.io/gdatasoftwareag/vaas/scanner
       pullPolicy: Always
-      tag: 1.9.4
+      tag: 1.9.5
     containerSecurityContext:
       enabled: false
+    resources:
+      limits:
+        memory: 4Gi
+      requests:
+        cpu: '1'
+     
   terminationGracePeriodSeconds: 30
 
   nameOverride: ""
