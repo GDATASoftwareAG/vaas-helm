@@ -24,7 +24,7 @@ mini-identity-provider:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider
     pullPolicy: Always
-    tag: 0.1.4
+    tag: 0.1.7
 
   service:
     type: ClusterIP
@@ -146,7 +146,7 @@ gdscan:
     image:
       repository: ghcr.io/gdatasoftwareag/vaas/scanserver
       pullPolicy: Always
-      tag: 1.9.5
+      tag: 1.9.8
     containerSecurityContext:
       enabled: false
     resources:
@@ -159,7 +159,7 @@ gdscan:
     image:
       repository: ghcr.io/gdatasoftwareag/vaas/scanner
       pullPolicy: Always
-      tag: 1.9.5
+      tag: 1.9.8
     containerSecurityContext:
       enabled: false
     resources:

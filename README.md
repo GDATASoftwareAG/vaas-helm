@@ -25,7 +25,7 @@ gdscan:
 2. Install Verdict-as-a-Service:
 
 ```bash
-helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
+helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas --create-namespace
 ```
 
 ### Updating Verdict-as-a-Service
@@ -38,12 +38,19 @@ helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n va
 
 ## Getting started
 
+Tested prerequisites:
+
+* Ubuntu 22.04
+* Minikube 1.32.0
+* Java 17
+* Vaas Java SDK 6.1.0
+
 ### Deploy Verdict-as-a-Service in a Minikube test-environment
 
 * Start Minikube:
 
 ```
-minikube start --cpus="6" --memory="10g" --addons ingress
+minikube start --cpus="6" --memory="8g" --addons ingress
 ```
 
 * Check your Minikube IP: ```minikube ip```

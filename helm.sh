@@ -7,8 +7,11 @@ fi
 
 VALUES_FILE=$1
 
+# Copies the dockerconfigjson from the values file to the local docker config
+# grep -A2 "dockerconfigjson:" $VALUES_FILE | awk '{print $2}' | tr -d '"' | base64 --decode >> ~/.docker/config.json
+
 helm dep up charts/vaas
 helm lint charts/vaas -f $VALUES_FILE
-helm template charts/vaas -f $VALUES_FILE --debug
+helm template charts/vaas -f $VALUES_FILE
 helm uninstall vaas -n vaas
 helm install vaas charts/vaas -f $VALUES_FILE -n vaas --create-namespace
