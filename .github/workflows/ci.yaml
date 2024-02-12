@@ -44,6 +44,7 @@ jobs:
         run: ct lint --config .github/chart-testing-config.yaml --validate-maintainers=false --charts charts/vaas
 
       - name: Push chart
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: appany/helm-oci-chart-releaser@v0.4.1
         with:
           name: vaas
