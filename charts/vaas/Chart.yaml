@@ -16,6 +16,6 @@ dependencies:
     condition: gdscan.enabled
     repository: https://gdatasoftwareag.github.io/gdscan/
   - name: mini-identity-provider
-    version: 0.1.16
+    version: 0.1.17
     condition: mini-identity-provider.enabled
     repository: oci://ghcr.io/gdatasoftwareag
