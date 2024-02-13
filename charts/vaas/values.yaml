@@ -102,8 +102,14 @@ gateway:
       memory: 256Mi
 
   containerSecurityContext:
-    enabled: false
-
+    enabled: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    runAsNonRoot: true
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/gateway
     pullPolicy: Always
@@ -147,8 +153,6 @@ gdscan:
       repository: ghcr.io/gdatasoftwareag/vaas/scanserver
       pullPolicy: Always
       tag: 1.9.8
-    containerSecurityContext:
-      enabled: false
     resources:
       limits:
         memory: 2.5Gi
@@ -160,8 +164,6 @@ gdscan:
       repository: ghcr.io/gdatasoftwareag/vaas/scanner
       pullPolicy: Always
       tag: 1.9.8
-    containerSecurityContext:
-      enabled: false
     resources:
       limits:
         memory: 4Gi
@@ -247,6 +249,13 @@ redis:
     persistence:
       enabled: false
     containerSecurityContext:
-      enabled: false
+      enabled: true
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
   networkPolicy:
     enabled: true

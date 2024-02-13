@@ -8,11 +8,11 @@ maintainers:
 type: application
 dependencies:
   - name: redis
-    version: 18.1.5
+    version: 18.12.1
     condition: redis.enabled
     repository: https://charts.bitnami.com/bitnami
   - name: gdscan
-    version: 1.4.5
+    version: 1.6.0
     condition: gdscan.enabled
     repository: https://gdatasoftwareag.github.io/gdscan/
   - name: mini-identity-provider
