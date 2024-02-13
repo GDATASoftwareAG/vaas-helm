@@ -224,8 +224,6 @@ gdscan:
       registry: docker.io
       repository: bitnami/kubectl
       tag: latest
-    containerSecurityContext:
-      enabled: false
     enabled: true
     schedule: "0 * * * *"
     networkPolicy:
