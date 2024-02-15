@@ -1,12 +1,12 @@
 dependencies:
-- name: redis
-  repository: https://charts.bitnami.com/bitnami
-  version: 18.12.1
-- name: gdscan
-  repository: https://gdatasoftwareag.github.io/gdscan/
-  version: 1.6.0
-- name: mini-identity-provider
-  repository: oci://ghcr.io/gdatasoftwareag
-  version: 0.1.17
-digest: sha256:58cd2dbd7a6d6d3749dd68c3ae1c0e75237a368ebf01cafa36ca7794a8982118
-generated: "2024-02-13T08:40:59.295006648+01:00"
+  - name: redis
+    repository: https://charts.bitnami.com/bitnami
+    version: 18.13.0
+  - name: gdscan
+    repository: https://gdatasoftwareag.github.io/gdscan/
+    version: 1.6.0
+  - name: mini-identity-provider
+    repository: oci://ghcr.io/gdatasoftwareag
+    version: 0.1.17
+digest: sha256:96e578cea54499e107df0698edb300cf8fdc1a9048d66b649a1cf3f7eca33503
+generated: "2024-02-15T08:12:47.250577642Z"
