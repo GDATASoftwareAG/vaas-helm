@@ -28,8 +28,9 @@ spec:
           emptyDir: {}
       containers:
         - name: {{ include "gateway.name" . }}
-          securityContext:
-            readOnlyRootFilesystem: true
+          {{- if .Values.gateway.containerSecurityContext.enabled }}        
+          securityContext: {{- omit .Values.gateway.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
           image: '{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag | default "latest" }}'
           imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
           volumeMounts:
