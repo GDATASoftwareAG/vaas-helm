@@ -72,6 +72,10 @@ Create environment variables to configure gateway container.
   value: {{.Values.gateway.uploadUrl}}
 - name: JwtSettings__Secret
   value: {{ randAlphaNum 64 }}
+- name: GDScanConfiguration__Url
+  value: "http://gdscan:8080/scan/body"
+- name: RedisConfiguration__Configuration
+  value: "redis-master"
 {{- if .Values.gateway.cloudhashlookup.enabled }}
 - name: VerdictAsAService__Url
   value: {{ .Values.gateway.options.url | quote }}
