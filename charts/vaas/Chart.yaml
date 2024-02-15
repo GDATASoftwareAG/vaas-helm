@@ -12,7 +12,7 @@ dependencies:
     condition: redis.enabled
     repository: https://charts.bitnami.com/bitnami
   - name: gdscan
-    version: 1.4.5
+    version: 1.6.0
     condition: gdscan.enabled
     repository: https://gdatasoftwareag.github.io/gdscan/
   - name: mini-identity-provider
