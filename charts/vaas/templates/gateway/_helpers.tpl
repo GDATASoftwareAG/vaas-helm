@@ -89,3 +89,10 @@ Create environment variables to configure gateway container.
   {{ toYaml .Values.gateway.options.credentials.clientsecret }}
 {{- end }}
 {{- end }}
+
+{{- define "gateway.extractEnvVars" -}}
+{{- range $key, $value := .Values.gateway.extraEnvVars }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+{{- end }}
+{{- end }}

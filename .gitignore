@@ -4,3 +4,4 @@
 *-locale.yaml
 *.tgz
 .fleet/
+values-local.yaml

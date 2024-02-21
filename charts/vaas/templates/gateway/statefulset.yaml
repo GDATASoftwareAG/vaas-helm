@@ -37,7 +37,19 @@ spec:
           - mountPath: /tmp
             name: gateway-tmp
           env: 
-            {{- include "gateway.env" . | nindent 12 }}
+            - name: Authentication__Schemes__Bearer__Authority
+              value: {{.Values.gateway.authentication.authority}} 
+            - name: Authentication__Schemes__Bearer__RequireHttpsMetadata
+              value: "false"
+            - name: Upload__Endpoint
+              value: {{.Values.gateway.uploadUrl}}
+            - name: JwtSettings__Secret
+              value: {{ randAlphaNum 64 }}
+            - name: GDScanConfiguration__Url
+              value: "http://gdscan:8080/scan/body"
+            - name: RedisConfiguration__Configuration
+              value: "redis-master"
+            {{- include "gateway.extractEnvVars" . | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.gateway.service.http.port }}
