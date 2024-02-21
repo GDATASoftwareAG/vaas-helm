@@ -6,3 +6,4 @@
 .fleet/
 values-local.yaml
 .output/
+Chart.lock
