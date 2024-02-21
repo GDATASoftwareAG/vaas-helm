@@ -134,6 +134,8 @@ gateway:
   tolerations: []
   affinity: {}
 
+  extraEnvVars: []
+
   # This block is only for G DATA's internal usage.
   hashlookup:
     enabled: false

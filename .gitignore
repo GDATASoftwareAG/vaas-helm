@@ -4,3 +4,6 @@
 *-locale.yaml
 *.tgz
 .fleet/
+values-local.yaml
+.output/
+Chart.lock
