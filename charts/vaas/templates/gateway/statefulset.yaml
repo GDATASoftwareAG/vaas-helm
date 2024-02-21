@@ -49,7 +49,19 @@ spec:
               value: "http://gdscan:8080/scan/body"
             - name: RedisConfiguration__Configuration
               value: "redis-master"
-            {{- include "gateway.extractEnvVars" . | nindent 12 }}
+            {{- if .Values.gateway.cloudhashlookup.enabled }}
+            - name: VerdictAsAService__Url
+              value: {{ .Values.gateway.options.url | quote }}
+            - name: VerdictAsAService__TokenUrl
+              value: {{ .Values.gateway.options.tokenurl | quote }}
+            - name: VerdictAsAService__Credentials__GrantType
+              value: {{ .Values.gateway.options.credentials.granttype | quote }}
+            - name: VerdictAsAService__Credentials__ClientId
+              value: {{ .Values.gateway.options.credentials.clientid | quote }}
+            - name: VerdictAsAService__Credentials__ClientSecret
+              {{ toYaml .Values.gateway.options.credentials.clientsecret }}
+            {{- end }}
+            {{- toYaml .Values.gateway.extraEnvVars | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.gateway.service.http.port }}
