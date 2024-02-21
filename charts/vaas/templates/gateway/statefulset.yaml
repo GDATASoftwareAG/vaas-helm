@@ -36,7 +36,10 @@ spec:
           volumeMounts:
           - mountPath: /tmp
             name: gateway-tmp
-          env: 
+          env:
+            {{- if .Values.gateway.extraEnvVars }}
+            {{- toYaml .Values.gateway.extraEnvVars | nindent 12 }}
+            {{- end }}
             - name: Authentication__Schemes__Bearer__Authority
               value: {{.Values.gateway.authentication.authority}} 
             - name: Authentication__Schemes__Bearer__RequireHttpsMetadata
@@ -61,7 +64,6 @@ spec:
             - name: VerdictAsAService__Credentials__ClientSecret
               {{ toYaml .Values.gateway.options.credentials.clientsecret }}
             {{- end }}
-            {{- toYaml .Values.gateway.extraEnvVars | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.gateway.service.http.port }}
