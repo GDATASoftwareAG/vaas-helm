@@ -70,6 +70,8 @@ spec:
               value: {{ .Release.Name }}
             - name: Sentry__Environment
               value: {{ .Release.Name }}
+            - name: HostOptions__ShutdownTimeout
+              value: {{ include "common.secondsToHHMMSS" .Values.gateway.terminationGracePeriodSeconds | quote }}
           ports:
             - name: http
               containerPort: {{ .Values.gateway.service.http.port }}
