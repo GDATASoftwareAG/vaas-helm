@@ -64,6 +64,12 @@ spec:
             - name: VerdictAsAService__Credentials__ClientSecret
               {{ toYaml .Values.gateway.options.credentials.clientsecret }}
             {{- end }}
+            - name: DOTNET_ENVIRONMENT
+              value: {{ .Release.Name }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Release.Name }}
+            - name: Sentry__Environment
+              value: {{ .Release.Name }}
           ports:
             - name: http
               containerPort: {{ .Values.gateway.service.http.port }}
