@@ -177,6 +177,9 @@ gdscan:
   nameOverride: ""
   fullnameOverride: "gdscan"
 
+  networkPolicy:
+    enabled: true
+
   podAnnotations: {}
 
   service:
