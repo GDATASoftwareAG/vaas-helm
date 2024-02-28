@@ -58,4 +58,5 @@ Selector labels
 {{- define "gateway.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "gateway.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/namespace: {{ .Release.Namespace }}
 {{- end }}
