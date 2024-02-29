@@ -1,0 +1,117 @@
+{{- if or (.Values.persistence.enabled | not) (eq .Values.persistence.accessMode "ReadWriteMany" ) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gdscan.fullname" . }}
+  labels:
+    {{- include "gdscan.labels" . | nindent 4 }}
+spec:
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "gdscan.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "gdscan.selectorLabels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: samples
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "vaas.claimName" . }}
+        {{- else }}
+          emptyDir:
+            sizeLimit: {{ .Values.persistence.size | quote }}
+          {{- if .Values.persistence.memory }}
+            medium : "Memory"
+          {{- end }}
+        {{- end }}
+        - name: server-tmp
+          emptyDir: {}
+        - name: scan-socket
+          emptyDir: {}
+        - name: client-tmp
+          emptyDir: {}
+        - name: server-var-log
+          emptyDir: {}
+      {{- include "gdscan.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: {{ .Values.server.name }}
+          env:
+            - name: date
+              value: "{{ now | unixEpoch }}"
+          image: '{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          {{- if .Values.server.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.server.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: server-tmp
+              mountPath: /tmp
+            - name: samples
+              mountPath: /tmp/scan
+            - name: scan-socket
+              mountPath: /var/share/run
+            - name: server-var-log
+              mountPath: /var/log
+          resources:
+            {{- toYaml .Values.resources.server | nindent 12 }}
+        - name: {{ .Values.client.name }}
+          image: '{{ .Values.client.image.repository }}:{{ .Values.client.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
+          {{- if .Values.client.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.client.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: samples
+              mountPath: /tmp/scan
+            - name: scan-socket
+              mountPath: /var/share/run
+            - name: client-tmp
+              mountPath: /tmp
+          resources:
+            {{- toYaml .Values.resources.client | nindent 12 }}
+          ports:
+            - name: api
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: api
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: api
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          env:
+            - name: HostOptions__ShutdownTimeout
+              value: {{ include "common.secondsToHHMMSS" .Values.terminationGracePeriodSeconds | quote }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroup: 1654
+{{- end }}

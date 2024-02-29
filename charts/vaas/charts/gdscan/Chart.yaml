@@ -1,0 +1,8 @@
+apiVersion: v2
+name: gdscan
+description: Deploys a G DATA scanserver and client
+maintainers:
+  - name: G DATA CyberDefense AG
+    email: oem@gdata.de
+type: application
+version: 1.8.0
