@@ -1,12 +1,7 @@
 replicaCount: 1
 deploymentStrategy: "Recreate"
 client:
-  resources:
-    limits:
-      memory: 2Gi
-    requests:
-      cpu: 2
-      memory: 2Gi
+  resources: {}
   name: client
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/scanclient

@@ -149,29 +149,15 @@ gateway:
 gdscan:
   replicaCount: 1
   deploymentStrategy: "Recreate"
-  server:
-    name: server
-    image:
-      repository: ghcr.io/gdatasoftwareag/vaas/scanserver
-      pullPolicy: Always
-      tag: 1.9.8
-    resources:
-      limits:
-        memory: 2.5Gi
-      requests:
-        cpu: '1'
   client:
-    name: client
-    image:
-      repository: ghcr.io/gdatasoftwareag/vaas/scanner
-      pullPolicy: Always
-      tag: 1.9.8
     resources:
-      limits:
-        memory: 4Gi
+    ## we recommend setting an upper limit
+    #   limits:
+    #     cpu: 2
+    #     memory: 2Gi
       requests:
-        cpu: '1'
-
+        cpu: 2
+        memory: 2Gi
   terminationGracePeriodSeconds: 30
 
   nameOverride: ""
@@ -191,20 +177,6 @@ gdscan:
       enabled: false
       port: 8080
       path: /metrics
-
-  resources:
-    server:
-      limits:
-        memory: 2Gi
-      requests:
-        cpu: 0.15
-        memory: 2Gi
-    client:
-      limits:
-        memory: 1Gi
-      requests:
-        cpu: 1
-        memory: 512Mi
 
   autoscaling:
     enabled: false
