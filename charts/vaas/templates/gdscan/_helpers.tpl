@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "gdscan.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.gdscan.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -11,10 +11,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "gdscan.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- if .Values.gdscan.fullnameOverride }}
+{{- .Values.gdscan.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name := default .Chart.Name .Values.gdscan.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -44,7 +44,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{- define "gdscan.imagePullSecrets" -}}
 
-{{- $imagePullSecrets := concat (((.Values.global | default dict).imagePullSecrets)| default list) (.Values.imagePullSecrets | default list) -}}
+{{- $imagePullSecrets := concat (((.Values.gdscan.global | default dict).imagePullSecrets)| default list) (.Values.gdscan.imagePullSecrets | default list) -}}
 {{- if gt (len $imagePullSecrets) 0 -}}
 imagePullSecrets:
   {{- range $imagePullSecrets }}
@@ -62,7 +62,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/namespace: {{ .Release.Namespace }}
 {{- end }}
 
-{{- define "common.tplvalues.render" -}}
+{{- define "common.tplValues.gdscan.render" -}}
     {{- if typeIs "string" .value }}
         {{- tpl .value .context }}
     {{- else }}
@@ -70,11 +70,11 @@ app.kubernetes.io/namespace: {{ .Release.Namespace }}
     {{- end }}
 {{- end -}}
 
-{{- define "common.names.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- define "gdscan.names.fullname" -}}
+{{- if .Values.gdscan.fullnameOverride -}}
+{{- .Values.gdscan.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $name := default .Chart.Name .Values.gdscan.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -84,10 +84,10 @@ app.kubernetes.io/namespace: {{ .Release.Namespace }}
 {{- end -}}
 
 {{- define "vaas.claimName" -}}
-{{- if and .Values.persistence.existingClaim }}
-    {{- printf "%s" (tpl .Values.persistence.existingClaim $) -}}
+{{- if and .Values.gdscan.persistence.existingClaim }}
+    {{- printf "%s" (tpl .Values.gdscan.persistence.existingClaim $) -}}
 {{- else -}}
-    {{- printf "%s" (include "common.names.fullname" .) -}}
+    {{- printf "%s" (include "gdscan.names.fullname" .) -}}
 {{- end -}}
 {{- end -}}
 

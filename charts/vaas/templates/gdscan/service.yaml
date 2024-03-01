@@ -5,9 +5,9 @@ metadata:
   labels:
     {{- include "gdscan.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.gdscan.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.gdscan.service.port }}
       targetPort: api
       protocol: TCP
       name: http

@@ -158,18 +158,38 @@ gdscan:
       requests:
         cpu: 2
         memory: 2Gi
+    name: client
+    image:
+      repository: ghcr.io/gdatasoftwareag/vaas/scanner
+      pullPolicy: Always
+      tag: 1
+    containerSecurityContext:
+      enabled: true
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
   terminationGracePeriodSeconds: 30
+
+  imagePullSecrets:
+    - gdscanregistry
 
   nameOverride: ""
   fullnameOverride: "gdscan"
 
   networkPolicy:
-    enabled: true
+    enabled: false
 
   podAnnotations: {}
 
+  secret:
+    dockerconfigjson: ""
+
   service:
-    type: "ClusterIP"
+    type: ""
     port: 8080
 
   metrics:
@@ -177,6 +197,17 @@ gdscan:
       enabled: false
       port: 8080
       path: /metrics
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: gdscan.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
 
   autoscaling:
     enabled: false
@@ -192,16 +223,28 @@ gdscan:
   affinity: {}
 
   persistence:
-    enabled: true
-    size: 2Gi
+    enabled: false
     accessMode: ReadWriteOnce
+    memory: false
+    size: 5Gi
+    storageClass: ""
 
   autoUpdate:
     image:
       registry: docker.io
       repository: bitnami/kubectl
-      tag: latest
+      tag: 1.29
+    containerSecurityContext:
+      enabled: true
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
     enabled: true
+    # every hour
     schedule: "0 * * * *"
     networkPolicy:
       enabled: true

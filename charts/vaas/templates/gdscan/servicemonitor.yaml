@@ -1,4 +1,4 @@
-{{- if .Values.metrics.servicemonitor.enabled }}
+{{- if .Values.gdscan.metrics.servicemonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -7,8 +7,8 @@ metadata:
     {{- include "gdscan.labels" . | nindent 4 }}
 spec:
   endpoints:
-  - port: {{ .Values.metrics.servicemonitor.port | quote }}
-    path: {{ .Values.metrics.servicemonitor.path }}
+  - port: {{ .Values.gdscan.metrics.servicemonitor.port | quote }}
+    path: {{ .Values.gdscan.metrics.servicemonitor.path }}
   selector:
     matchLabels:
       {{- include "gdscan.selectorLabels" . | nindent 8 }}

@@ -1,4 +1,4 @@
-{{- if and .Values.autoscaling.enabled }}
+{{- if and .Values.gdscan.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -8,16 +8,16 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
-    {{- if and (.Values.persistence.enabled) (eq .Values.persistence.accessMode "ReadWriteOnce" ) }}
+    {{- if and (.Values.gdscan.persistence.enabled) (eq .Values.gdscan.persistence.accessMode "ReadWriteOnce" ) }}
     kind: StatefulSet
     {{- else }}
     kind: Deployment
     {{- end }}
     name: {{ include "gdscan.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
-  {{- if .Values.autoscaling.metrics }}
-  metrics: {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
+  minReplicas: {{ .Values.gdscan.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.gdscan.autoscaling.maxReplicas }}
+  {{- if .Values.gdscan.autoscaling.metrics }}
+  metrics: {{- toYaml .Values.gdscan.autoscaling.metrics | nindent 4 }}
   {{- else }}
   metrics:
     - type: Resource
@@ -25,6 +25,6 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetCPU }}
+          averageUtilization: {{ .Values.gdscan.autoscaling.targetCPU }}
   {{- end }}
 {{- end }}

@@ -1,4 +1,4 @@
-{{- if .Values.autoUpdate.enabled -}}
+{{- if .Values.gdscan.autoUpdate.enabled -}}
 kind: ServiceAccount
 apiVersion: v1
 metadata:
@@ -41,7 +41,7 @@ spec:
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
-  schedule: "{{ .Values.autoUpdate.schedule }}"
+  schedule: "{{ .Values.gdscan.autoUpdate.schedule }}"
   jobTemplate:
     spec:
       backoffLimit: 2
@@ -55,26 +55,26 @@ spec:
         spec:
           serviceAccountName: update
           restartPolicy: Never
-          {{- with .Values.nodeSelector }}
+          {{- with .Values.gdscan.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}       
           containers:
             - name: kubectl
-              image: "{{ .Values.autoUpdate.image.registry }}/{{ .Values.autoUpdate.image.repository }}:{{ .Values.autoUpdate.image.tag }}"
-              {{- if .Values.autoUpdate.containerSecurityContext.enabled }}
-              securityContext: {{- omit .Values.autoUpdate.containerSecurityContext "enabled" | toYaml | nindent 16 }}
+              image: "{{ .Values.gdscan.autoUpdate.image.registry }}/{{ .Values.gdscan.autoUpdate.image.repository }}:{{ .Values.gdscan.autoUpdate.image.tag }}"
+              {{- if .Values.gdscan.autoUpdate.containerSecurityContext.enabled }}
+              securityContext: {{- omit .Values.gdscan.autoUpdate.containerSecurityContext "enabled" | toYaml | nindent 16 }}
               {{- end }}                
               command:
                 - "kubectl"
                 - "rollout"
                 - "restart"
-{{- if and (.Values.persistence.enabled) (eq .Values.persistence.accessMode "ReadWriteOnce" ) }}
+{{- if and (.Values.gdscan.persistence.enabled) (eq .Values.gdscan.persistence.accessMode "ReadWriteOnce" ) }}
                 - "statefulset/{{ include "gdscan.fullname" . }}"
 {{- else }}
                 - "deployment/{{ include "gdscan.fullname" . }}"
 {{- end }}
-{{- if .Values.autoUpdate.networkPolicy.enabled }}
+{{- if .Values.gdscan.autoUpdate.networkPolicy.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -90,6 +90,6 @@ spec:
   ingress: []
   egress:
     - ports:
-        - port: {{ .Values.autoUpdate.networkPolicy.k8sApiPort }}
+        - port: {{ .Values.gdscan.autoUpdate.networkPolicy.k8sApiPort }}
 {{- end }}
 {{- end}}

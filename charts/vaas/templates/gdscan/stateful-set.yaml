@@ -1,4 +1,4 @@
-{{- if and (.Values.persistence.enabled) (eq .Values.persistence.accessMode "ReadWriteOnce" ) }}
+{{- if and (.Values.gdscan.persistence.enabled) (eq .Values.gdscan.persistence.accessMode "ReadWriteOnce" ) }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -7,8 +7,8 @@ metadata:
     {{- include "gdscan.labels" . | nindent 4 }}
 spec:
   serviceName: {{ include "gdscan.fullname" . }}
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  {{- if not .Values.gdscan.autoscaling.enabled }}
+  replicas: {{ .Values.gdscan.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -18,13 +18,13 @@ spec:
         name: samples
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        {{- include "common.storage.class" (dict "persistence" .Values.persistence "global" .Values.global) | nindent 8 }}
+        {{- include "common.storage.class" (dict "persistence" .Values.gdscan.persistence "global" .Values.gdscan.global) | nindent 8 }}
         resources:
           requests:
-            storage: {{ .Values.persistence.size | quote }}
+            storage: {{ .Values.gdscan.persistence.size | quote }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.gdscan.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -42,11 +42,11 @@ spec:
         - name: server-var-log
           emptyDir: {}
       containers:
-        - name: {{ .Values.client.name }}
-          image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
-          {{- if .Values.client.containerSecurityContext.enabled }}
-          securityContext: {{- omit .Values.client.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+        - name: {{ .Values.gdscan.client.name }}
+          image: "{{ .Values.gdscan.client.image.repository }}:{{ .Values.gdscan.client.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.gdscan.client.image.pullPolicy }}
+          {{- if .Values.gdscan.client.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.gdscan.client.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: samples
@@ -56,7 +56,7 @@ spec:
             - name: client-tmp
               mountPath: /tmp
           resources:
-            {{- toYaml .Values.client.resources | nindent 12 }}
+            {{- toYaml .Values.gdscan.client.resources | nindent 12 }}
           ports:
             - name: api
               containerPort: 8080
@@ -75,17 +75,17 @@ spec:
             periodSeconds: 5
           env:
             - name: HostOptions__ShutdownTimeout
-              value: {{ include "common.secondsToHHMMSS" .Values.terminationGracePeriodSeconds | quote }}
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{- with .Values.nodeSelector }}
+              value: {{ include "common.secondsToHHMMSS" .Values.gdscan.terminationGracePeriodSeconds | quote }}
+      terminationGracePeriodSeconds: {{ .Values.gdscan.terminationGracePeriodSeconds }}
+      {{- with .Values.gdscan.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.gdscan.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.gdscan.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
