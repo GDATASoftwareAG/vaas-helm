@@ -1,23 +1,12 @@
 replicaCount: 1
 deploymentStrategy: "Recreate"
-server:
-  name: server
-  image:
-    repository: ghcr.io/gdatasoftwareag/vaas/scanserver
-    pullPolicy: Always
-    tag: 1
-  containerSecurityContext:
-    enabled: true
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
-    runAsNonRoot: true
-    capabilities:
-      drop: ["ALL"]
-    seccompProfile:
-      type: RuntimeDefault
-    runAsGroup: 1001
-    runAsUser: 1001
 client:
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: 2
+      memory: 2Gi
   name: client
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/scanclient
@@ -68,20 +57,6 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls: []
-
-resources:
-  server:
-    limits:
-      memory: 2Gi
-    requests:
-      cpu: 2
-      memory: 2Gi
-  client:
-    limits:
-      memory: 128Mi
-    requests:
-      cpu: 1
-      memory: 128Mi
 
 autoscaling:
   enabled: false
