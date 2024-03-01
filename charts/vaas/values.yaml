@@ -174,19 +174,13 @@ gdscan:
         type: RuntimeDefault
   terminationGracePeriodSeconds: 30
 
-  imagePullSecrets:
-    - gdscanregistry
-
   nameOverride: ""
   fullnameOverride: "gdscan"
 
   networkPolicy:
-    enabled: false
+    enabled: true
 
   podAnnotations: {}
-
-  secret:
-    dockerconfigjson: ""
 
   service:
     type: ""

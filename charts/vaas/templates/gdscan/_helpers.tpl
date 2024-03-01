@@ -44,7 +44,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{- define "gdscan.imagePullSecrets" -}}
 
-{{- $imagePullSecrets := concat (((.Values.gdscan.global | default dict).imagePullSecrets)| default list) (.Values.gdscan.imagePullSecrets | default list) -}}
+{{- $imagePullSecrets := concat (((.Values.global | default dict).imagePullSecrets)| default list) (.Values.gdscan.imagePullSecrets | default list) -}}
 {{- if gt (len $imagePullSecrets) 0 -}}
 imagePullSecrets:
   {{- range $imagePullSecrets }}

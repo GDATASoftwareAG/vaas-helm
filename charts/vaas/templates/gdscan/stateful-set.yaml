@@ -35,8 +35,6 @@ spec:
       volumes:
         - name: server-tmp
           emptyDir: {}
-        - name: scan-socket
-          emptyDir: {}
         - name: client-tmp
           emptyDir: {}
         - name: server-var-log
@@ -51,8 +49,6 @@ spec:
           volumeMounts:
             - name: samples
               mountPath: /tmp/scan
-            - name: scan-socket
-              mountPath: /var/share/run
             - name: client-tmp
               mountPath: /tmp
           resources:

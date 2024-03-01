@@ -48,8 +48,6 @@ spec:
           volumeMounts:
             - name: samples
               mountPath: /tmp/scan
-            - name: scan-socket
-              mountPath: /var/share/run
             - name: client-tmp
               mountPath: /tmp
           resources:
