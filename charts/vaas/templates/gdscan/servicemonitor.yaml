@@ -1,0 +1,15 @@
+{{- if .Values.gdscan.metrics.servicemonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "gdscan.fullname" . }}
+  labels:
+    {{- include "gdscan.labels" . | nindent 4 }}
+spec:
+  endpoints:
+  - port: {{ .Values.gdscan.metrics.servicemonitor.port | quote }}
+    path: {{ .Values.gdscan.metrics.servicemonitor.path }}
+  selector:
+    matchLabels:
+      {{- include "gdscan.selectorLabels" . | nindent 8 }}
+{{- end }}

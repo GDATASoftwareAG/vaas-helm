@@ -48,7 +48,7 @@ jobs:
         working-directory: charts/vaas
 
       - name: Run chart-testing (lint)
-        run: ct lint --config .github/chart-testing-config.yaml --validate-maintainers=false --charts charts/vaas
+        run: ct lint --validate-maintainers=false --charts charts/vaas
 
       - name: Push chart
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'

@@ -1,0 +1,95 @@
+{{- if .Values.gdscan.autoUpdate.enabled -}}
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: update
+  namespace: "{{ .Release.Namespace }}"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: update
+  namespace: "{{ .Release.Namespace }}"
+rules:
+  - apiGroups: ["apps", "extensions"]
+    resources: ["deployments", "statefulsets"]
+    resourceNames: [{{ include "gdscan.fullname" . }}]
+    verbs:
+      ["get", "patch", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: update
+  namespace: "{{ .Release.Namespace }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: update
+subjects:
+  - kind: ServiceAccount
+    name: update
+    namespace: "{{ .Release.Namespace }}"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  schedule: "{{ .Values.gdscan.autoUpdate.schedule }}"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: update
+            app.kubernetes.io/instance: "{{ .Release.Name }}"
+            app.kubernetes.io/namespace: "{{ .Release.Namespace }}"
+        spec:
+          serviceAccountName: update
+          restartPolicy: Never
+          {{- with .Values.gdscan.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}       
+          containers:
+            - name: kubectl
+              image: "{{ .Values.gdscan.autoUpdate.image.registry }}/{{ .Values.gdscan.autoUpdate.image.repository }}:{{ .Values.gdscan.autoUpdate.image.tag }}"
+              {{- if .Values.gdscan.autoUpdate.containerSecurityContext.enabled }}
+              securityContext: {{- omit .Values.gdscan.autoUpdate.containerSecurityContext "enabled" | toYaml | nindent 16 }}
+              {{- end }}                
+              command:
+                - "kubectl"
+                - "rollout"
+                - "restart"
+{{- if and (.Values.gdscan.persistence.enabled) (eq .Values.gdscan.persistence.accessMode "ReadWriteOnce" ) }}
+                - "statefulset/{{ include "gdscan.fullname" . }}"
+{{- else }}
+                - "deployment/{{ include "gdscan.fullname" . }}"
+{{- end }}
+{{- if .Values.gdscan.autoUpdate.networkPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: "{{ .Release.Name }}-update"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: update
+      app.kubernetes.io/namespace: {{ .Release.Namespace }}
+  policyTypes:
+    - Egress
+  ingress: []
+  egress:
+    - ports:
+        - port: {{ .Values.gdscan.autoUpdate.networkPolicy.k8sApiPort }}
+{{- end }}
+{{- end}}

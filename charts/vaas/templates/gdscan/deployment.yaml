@@ -1,0 +1,89 @@
+{{- if or (.Values.gdscan.persistence.enabled | not) (eq .Values.gdscan.persistence.accessMode "ReadWriteMany" ) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gdscan.fullname" . }}
+  labels:
+    {{- include "gdscan.labels" . | nindent 4 }}
+spec:
+  strategy:
+    type: {{ .Values.gdscan.deploymentStrategy }}
+  {{- if not .Values.gdscan.autoscaling.enabled }}
+  replicas: {{ .Values.gdscan.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "gdscan.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.gdscan.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "gdscan.selectorLabels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: samples
+        {{- if .Values.gdscan.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "vaas.claimName" . }}
+        {{- else }}
+          emptyDir:
+            sizeLimit: {{ .Values.gdscan.persistence.size | quote }}
+          {{- if .Values.gdscan.persistence.memory }}
+            medium : "Memory"
+          {{- end }}
+        {{- end }}
+        - name: client-tmp
+          emptyDir: {}
+      {{- include "gdscan.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: {{ .Values.gdscan.client.name }}
+          image: '{{ .Values.gdscan.client.image.repository }}:{{ .Values.gdscan.client.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.gdscan.client.image.pullPolicy }}
+          {{- if .Values.gdscan.client.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.gdscan.client.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: samples
+              mountPath: /tmp/scan
+            - name: client-tmp
+              mountPath: /tmp
+          resources:
+            {{- toYaml .Values.gdscan.client.resources | nindent 12 }}
+          ports:
+            - name: api
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: api
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: api
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          env:
+            - name: HostOptions__ShutdownTimeout
+              value: {{ include "common.secondsToHHMMSS" .Values.gdscan.terminationGracePeriodSeconds | quote }}
+      terminationGracePeriodSeconds: {{ .Values.gdscan.terminationGracePeriodSeconds }}
+      {{- with .Values.gdscan.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gdscan.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gdscan.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroup: 1654
+{{- end }}

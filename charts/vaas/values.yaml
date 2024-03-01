@@ -149,29 +149,29 @@ gateway:
 gdscan:
   replicaCount: 1
   deploymentStrategy: "Recreate"
-  server:
-    name: server
-    image:
-      repository: ghcr.io/gdatasoftwareag/vaas/scanserver
-      pullPolicy: Always
-      tag: 1.9.8
-    resources:
-      limits:
-        memory: 2.5Gi
-      requests:
-        cpu: '1'
   client:
+    resources:
+    ## we recommend setting an upper limit
+    #   limits:
+    #     cpu: 2
+    #     memory: 2Gi
+      requests:
+        cpu: 2
+        memory: 2Gi
     name: client
     image:
       repository: ghcr.io/gdatasoftwareag/vaas/scanner
       pullPolicy: Always
-      tag: 1.9.8
-    resources:
-      limits:
-        memory: 4Gi
-      requests:
-        cpu: '1'
-
+      tag: 1
+    containerSecurityContext:
+      enabled: true
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
   terminationGracePeriodSeconds: 30
 
   nameOverride: ""
@@ -183,7 +183,7 @@ gdscan:
   podAnnotations: {}
 
   service:
-    type: "ClusterIP"
+    type: ""
     port: 8080
 
   metrics:
@@ -192,19 +192,16 @@ gdscan:
       port: 8080
       path: /metrics
 
-  resources:
-    server:
-      limits:
-        memory: 2Gi
-      requests:
-        cpu: 0.15
-        memory: 2Gi
-    client:
-      limits:
-        memory: 1Gi
-      requests:
-        cpu: 1
-        memory: 512Mi
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: gdscan.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
 
   autoscaling:
     enabled: false
@@ -220,16 +217,28 @@ gdscan:
   affinity: {}
 
   persistence:
-    enabled: true
-    size: 2Gi
+    enabled: false
     accessMode: ReadWriteOnce
+    memory: false
+    size: 5Gi
+    storageClass: ""
 
   autoUpdate:
     image:
       registry: docker.io
       repository: bitnami/kubectl
-      tag: latest
+      tag: 1.29
+    containerSecurityContext:
+      enabled: true
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
     enabled: true
+    # every hour
     schedule: "0 * * * *"
     networkPolicy:
       enabled: true

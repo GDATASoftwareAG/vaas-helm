@@ -1,0 +1,30 @@
+{{- if and .Values.gdscan.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "gdscan.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "gdscan.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    {{- if and (.Values.gdscan.persistence.enabled) (eq .Values.gdscan.persistence.accessMode "ReadWriteOnce" ) }}
+    kind: StatefulSet
+    {{- else }}
+    kind: Deployment
+    {{- end }}
+    name: {{ include "gdscan.fullname" . }}
+  minReplicas: {{ .Values.gdscan.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.gdscan.autoscaling.maxReplicas }}
+  {{- if .Values.gdscan.autoscaling.metrics }}
+  metrics: {{- toYaml .Values.gdscan.autoscaling.metrics | nindent 4 }}
+  {{- else }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.gdscan.autoscaling.targetCPU }}
+  {{- end }}
+{{- end }}
