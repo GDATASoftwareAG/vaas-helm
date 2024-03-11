@@ -6,7 +6,7 @@ Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
 1. Create a minimal values.yaml file:
 
-To access the VaaS docker containers, the image pull secret has to be set in the `global.secret.dockerconfigjson` and `gdscan.secret.dockerconfigjson` variable.
+To access the VaaS docker containers, the image pull secret has to be set in the `global.secret.dockerconfigjson` variable.
 
 `values`-File for a minimum example deployment:
 
@@ -14,10 +14,6 @@ To access the VaaS docker containers, the image pull secret has to be set in the
 global:
   imagePullSecrets:
     - registry
-  secret:
-    dockerconfigjson: "$$_BASE64_ENCODED_JSON_CONTAINING_TOKEN_$$"
-
-gdscan:
   secret:
     dockerconfigjson: "$$_BASE64_ENCODED_JSON_CONTAINING_TOKEN_$$"
 ```
