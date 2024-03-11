@@ -129,6 +129,8 @@ gateway:
       clientsecret:
         value: ""
 
+  terminationGracePeriodSeconds: 30
+
   podAnnotations: {}
   nodeSelector: {}
   tolerations: []
@@ -144,7 +146,6 @@ gateway:
   usageevents:
     enabled: false
   gdscanUrl: "http://gdscan:8080/scan/body"
-
 
 gdscan:
   replicaCount: 1

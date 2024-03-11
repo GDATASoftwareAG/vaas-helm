@@ -120,7 +120,8 @@ export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
 | `mini-identity-provider.nodeSelector` | mini-identity-provider Node labels for pod assignment | `{}` |
 | `tolerations` | Tolerations for pods | `[]` |
 | `affinity` | Affinity settings for pods | `{}` |
-
+| `gateway.terminationGracePeriodSeconds` | Max time in seconds for scans to complete | `30` |
+| `gdscan.terminationGracePeriodSeconds` | Max time in seconds for scans to complete. Set to same value as ```gateway.terminationGracePeriodSeconds``` | `30` |
 
 ### Production environment
 
