@@ -113,7 +113,7 @@ gateway:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/gateway
     pullPolicy: Always
-    tag: 1.0.2
+    tag: 1.1.0
 
   cloudhashlookup:
     enabled: false

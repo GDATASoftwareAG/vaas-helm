@@ -70,7 +70,7 @@ spec:
               value: {{ .Release.Name }}
             - name: Sentry__Environment
               value: {{ .Release.Name }}
-            - name: HostOptions__ShutdownTimeout
+            - name: MaxAnalysisDuration
               value: {{ include "common.secondsToHHMMSS" .Values.gateway.terminationGracePeriodSeconds | quote }}
           ports:
             - name: http
