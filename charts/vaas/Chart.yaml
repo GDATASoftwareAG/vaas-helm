@@ -8,7 +8,7 @@ maintainers:
 type: application
 dependencies:
   - name: redis
-    version: 18.19.2
+    version: 18.19.4
     condition: redis.enabled
     repository: oci://registry-1.docker.io/bitnamicharts
   - name: mini-identity-provider
