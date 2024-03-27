@@ -12,13 +12,13 @@ mini-identity-provider:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
       nginx.ingress.kubernetes.io/x-forwarded-prefix: "/auth"
     hosts:
-    - host: vaas
-      paths:
-      - path: /auth(/|$)(.*)
-        pathType: ImplementationSpecific
-        service:
-          name: provider
-          port: 8080
+      - host: vaas
+        paths:
+          - path: /auth(/|$)(.*)
+            pathType: ImplementationSpecific
+            service:
+              name: provider
+              port: 8080
     tls: []
 
   image:
@@ -149,13 +149,13 @@ gateway:
 
 gdscan:
   replicaCount: 1
-  deploymentStrategy: "Recreate"
+  deploymentStrategy: "RollingUpdate"
   client:
     resources:
-    ## we recommend setting an upper limit
-    #   limits:
-    #     cpu: 2
-    #     memory: 2Gi
+      ## we recommend setting an upper limit
+      #   limits:
+      #     cpu: 2
+      #     memory: 2Gi
       requests:
         cpu: 2
         memory: 2Gi
