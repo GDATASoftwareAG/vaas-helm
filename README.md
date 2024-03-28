@@ -92,36 +92,36 @@ export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
 
 | Parameter | Description | Value |
 |-------------|-------------|-------|
-| `ingress.enabled` | Enable/Disable the Ingress resource | `false` |
-| `ingress.annotations` | Additional annotations for Ingress | `{}` |
-| `ingress.hosts` | Hostnames and paths for Ingress | `[]` |
-| `ingress.tls` | TLS configuration for Ingress | `[]` |
-| `authentication.authority` | Authority for authentication | `""` |
-| `nameOverride` | Overrides the application name | `""` |
-| `fullnameOverride` | Overrides the full name | `""` |
-| `networkPolicy.enabled` | Enable/Disable the default Network Policy | `false` |
-| `secret.dockerconfigjson` | Docker authentication configuration | `""` |
-| `service.type` | Type of Kubernetes service | `""` |
-| `service.http.port` | HTTP port for the service | `8080` |
-| `service.ws.port` | WebSocket port for the service | `9090` |
-| `podDisruptionBudget.minAvailable` | Minimum available pods in case of disruption | `1` |
-| `replicaCount` | Number of replicas | `1` |
-| `revisionHistoryLimit` | Number of revisions in history | `1` |
-| `resources.limits.memory` | Maximum memory usage | `512Mi` |
-| `resources.requests.cpu` | Requested CPU performance | `0.5` |
-| `resources.requests.memory` | Requested memory usage | `256Mi` |
-| `containerSecurityContext.enabled` | Enable/Disable container security context | `false` |
-| `cloudhashlookup.enabled` | Enable/Disable cloud hash lookup | `false` |
-| `uploadUrl` | URL for the upload service | `"http://localhost:8080/upload"` |
-| `imagePullSecrets` | List of image pull secrets | `- name: registry` |
-| `podAnnotations` | Annotations for pods | `{}` |
-| `nodeSelector` | Node labels for pod assignment | `{}` |
-| `gdscan.nodeSelector` | gdscan Node labels for pod assignment | `{}` |
-| `mini-identity-provider.nodeSelector` | mini-identity-provider Node labels for pod assignment | `{}` |
-| `tolerations` | Tolerations for pods | `[]` |
-| `affinity` | Affinity settings for pods | `{}` |
+| `global.imagePullSecrets` | List of image pull secrets | `- name: registry` |
+| `global.secret.dockerconfigjson` | Docker authentication configuration | `""` |
+| `gateway.ingress.enabled` | Enable/Disable the Ingress resource | `false` |
+| `gateway.ingress.annotations` | Additional annotations for Ingress | `{}` |
+| `gateway.ingress.hosts` | Hostnames and paths for Ingress | `[]` |
+| `gateway.ingress.tls` | TLS configuration for Ingress | `[]` |
+| `gateway.authentication.authority` | Authority for authentication | `""` |
+| `gateway.nameOverride` | Overrides the application name | `""` |
+| `gateway.fullnameOverride` | Overrides the full name | `""` |
+| `gateway.networkPolicy.enabled` | Enable/Disable the default Network Policy | `false` |
+| `gateway.service.type` | Type of Kubernetes service | `""` |
+| `gateway.service.http.port` | HTTP port for the service | `8080` |
+| `gateway.service.ws.port` | WebSocket port for the service | `9090` |
+| `gateway.podDisruptionBudget.minAvailable` | Minimum available pods in case of disruption | `1` |
+| `gateway.replicaCount` | Number of replicas | `1` |
+| `gateway.revisionHistoryLimit` | Number of revisions in history | `1` |
+| `gateway.resources.limits.memory` | Maximum memory usage | `512Mi` |
+| `gateway.resources.requests.cpu` | Requested CPU performance | `0.5` |
+| `gateway.resources.requests.memory` | Requested memory usage | `256Mi` |
+| `gateway.containerSecurityContext.enabled` | Enable/Disable container security context | `false` |
+| `gateway.cloudhashlookup.enabled` | Enable/Disable cloud hash lookup | `false` |
+| `gateway.uploadUrl` | URL for the upload service | `"http://localhost:8080/upload"` |
+| `gateway.podAnnotations` | Annotations for pods | `{}` |
+| `gateway.nodeSelector` | Node labels for pod assignment | `{}` |
+| `gateway.affinity` | Affinity settings for pods | `{}` |
 | `gateway.terminationGracePeriodSeconds` | Max time in seconds for scans to complete | `30` |
+| `gdscan.nodeSelector` | gdscan node labels for pod assignment | `{}` |
+| `gdscan.replicaCount` | Number of replicas for the gdscan deployment | `1`` |
 | `gdscan.terminationGracePeriodSeconds` | Max time in seconds for scans to complete. Set to same value as ```gateway.terminationGracePeriodSeconds``` | `30` |
+| `mini-identity-provider.nodeSelector` | mini-identity-provider Node labels for pod assignment | `{}` |
 
 ### Production environment
 
