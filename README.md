@@ -45,7 +45,7 @@ Tested prerequisites:
 
 * Start Minikube:
 
-```
+```bash
 minikube start --cpus="6" --memory="8g" --addons ingress
 ```
 
@@ -67,28 +67,30 @@ minikube start --cpus="6" --memory="8g" --addons ingress
 
 * Make sure that Java 17 & Gradle is installed
 
-* Extract Client secret with this command
-
-```
-export CLIENT_SECRET=$(kubectl get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d)
-```
-
 * Set these environment variables for testing your local instance
 
-```
-export CLIENT_ID=vaas
-export SCAN_PATH=<filepath-to-scan>
-export VAAS_URL=ws://vaas/ws
-export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
+```bash
+export CLIENT_ID=vaas # default client id for self-hosted vaas
+export CLIENT_SECRET=$(kubectl get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d) # extracts the client secret from the k8s secret
+export SCAN_PATH=./build.gradle # path to the file you want to scan
+export VAAS_URL=ws://vaas/ws # URL of the VaaS instance you set earlier in your /etc/hosts
+export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token # URL of the token endpoint you set earlier in your /etc/hosts
 ```
 
 * Execute FileScan example in Java SDK example folder
 
-```
+```bash
 ./gradlew fileScan
 ```
 
 ## Configuring Verdict-as-a-Service
+
+If you want to scan larger files, you have to adjust the deployments body size limit in ```vaas.gateway.ingress.annotations```. Should looks like this:
+
+```yaml
+nginx.ingress.kubernetes.io/proxy-body-size: <your maximum filesize>
+nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+```
 
 | Parameter | Description | Value |
 |-------------|-------------|-------|
