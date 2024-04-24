@@ -52,18 +52,6 @@ spec:
               value: "http://gdscan:8080/scan/body"
             - name: RedisConfiguration__Configuration
               value: "redis-master"
-            {{- if .Values.gateway.cloudhashlookup.enabled }}
-            - name: VerdictAsAService__Url
-              value: {{ .Values.gateway.options.url | quote }}
-            - name: VerdictAsAService__TokenUrl
-              value: {{ .Values.gateway.options.tokenurl | quote }}
-            - name: VerdictAsAService__Credentials__GrantType
-              value: {{ .Values.gateway.options.credentials.granttype | quote }}
-            - name: VerdictAsAService__Credentials__ClientId
-              value: {{ .Values.gateway.options.credentials.clientid | quote }}
-            - name: VerdictAsAService__Credentials__ClientSecret
-              {{ toYaml .Values.gateway.options.credentials.clientsecret }}
-            {{- end }}
             - name: DOTNET_ENVIRONMENT
               value: {{ .Release.Name }}
             - name: ASPNETCORE_ENVIRONMENT
