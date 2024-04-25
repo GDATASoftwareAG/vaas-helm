@@ -85,7 +85,21 @@ export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token # URL of the tok
 
 ## Configuring Verdict-as-a-Service
 
-If you want to scan larger files, you have to adjust the deployments body size limit in ```vaas.gateway.ingress.annotations```. Should looks like this:
+The default configurations are set to provide the best verdict. When you have the need to run this helm-chart without sending the file hashes to our cloud, you can deactivate the cloud lookups with these options:
+
+```yaml
+cloud:
+  hashLookup:
+    enabled: false
+  allowlistLookup:
+    enabled: false
+```
+
+With the `hashLookup`, VaaS uses the G DATA Cloud to obtain additional information about a file and thus enrich the quality of the verdict. Without the hashLookup, this additional information is omitted and files that would ONLY be recognized via the cloud are therefore not recognized.
+
+The `allowlistLookup` is a request of the hash to the G DATA Cloud, against a list of files that we know for sure are not malicious, to prevent false positives. Some clean files are still detected by the scanners signatures and the `allowlistLookup` will prevent these files to be detected as `malicious` or `pup`.
+
+If you want to scan larger files, you have to adjust the deployments body size limit in `vaas.gateway.ingress.annotations`. Should looks like this:
 
 ```yaml
 nginx.ingress.kubernetes.io/proxy-body-size: <your maximum filesize>
@@ -96,6 +110,8 @@ nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
 | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | `global.imagePullSecrets`                  | List of image pull secrets                                                                                  | `- name: registry`               |
 | `global.secret.dockerconfigjson`           | Docker authentication configuration                                                                         | `""`                             |
+| `cloud.hashLookup.enabled`                 | Enable/Disable the cloud hash lookup                                                                        | `true`                           |
+| `cloud.allowlistLookup.enabled`            | Enable/Disable the cloud allowlist lookup                                                                   | `true`                           |
 | `gateway.ingress.enabled`                  | Enable/Disable the Ingress resource                                                                         | `false`                          |
 | `gateway.ingress.annotations`              | Additional annotations for Ingress                                                                          | `{}`                             |
 | `gateway.ingress.hosts`                    | Hostnames and paths for Ingress                                                                             | `[]`                             |

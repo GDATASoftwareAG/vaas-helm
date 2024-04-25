@@ -39,6 +39,12 @@ mini-identity-provider:
   tolerations: []
   affinity: {}
 
+cloud:
+  hashLookup:
+    enabled: true
+  allowlistLookup:
+    enabled: true
+
 gateway:
   ingress:
     enabled: true
@@ -136,7 +142,7 @@ gateway:
   extraEnvVars: []
 
   # This block is only for G DATA's internal usage.
-  hashlookup:
+  hashLookup:
     enabled: false
     apikey:
       value: ""
