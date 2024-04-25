@@ -60,6 +60,10 @@ spec:
               value: {{ .Release.Name }}
             - name: MaxAnalysisDuration
               value: {{ include "common.secondsToHHMMSS" .Values.gateway.terminationGracePeriodSeconds | quote }}
+            - name: FileCloudVerdictSource__Enable
+              value: {{ .Values.cloud.hashLookup.enabled | quote  }}
+            - name: FileAllowlistCloudVerdictSource__Enable
+              value: {{ .Values.cloud.allowlistLookup.enabled | quote }}
           ports:
             - name: http
               containerPort: {{ .Values.gateway.service.http.port }}
