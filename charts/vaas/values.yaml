@@ -115,9 +115,6 @@ gateway:
     pullPolicy: Always
     tag: 1.1.0
 
-  cloudhashlookup:
-    enabled: false
-
   uploadUrl: "http://vaas/upload"
 
   options:
