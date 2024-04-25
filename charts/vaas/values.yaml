@@ -123,15 +123,6 @@ gateway:
 
   uploadUrl: "http://vaas/upload"
 
-  options:
-    url: "wss://gateway.production.vaas.gdatasecurity.de"
-    tokenurl: "https://account.gdata.de/realms/vaas-production/protocol/openid-connect/token"
-    credentials:
-      granttype: "ClientCredentials"
-      clientid: ""
-      clientsecret:
-        value: ""
-
   terminationGracePeriodSeconds: 30
 
   podAnnotations: {}
@@ -142,10 +133,6 @@ gateway:
   extraEnvVars: []
 
   # This block is only for G DATA's internal usage.
-  hashLookup:
-    enabled: false
-    apikey:
-      value: ""
   usageevents:
     enabled: false
   gdscanUrl: "http://gdscan:8080/scan/body"

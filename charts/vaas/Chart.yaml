@@ -1,6 +1,6 @@
 apiVersion: v2
 name: vaas
-version: 1.4.0
+version: 1.4.1
 description: Deployment of a Verdict-as-a-Service on-premise instance
 maintainers:
   - name: G DATA CyberDefense AG
