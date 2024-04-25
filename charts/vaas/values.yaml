@@ -45,6 +45,15 @@ cloud:
   allowlistLookup:
     enabled: true
 
+sentry:
+  dsn: ""
+  environment: ""
+  release: ""
+  maxBreadcrumbs: ""
+  maxQueueItems: ""
+  enableTracing: ""
+  tracesSampleRate: ""
+
 gateway:
   ingress:
     enabled: true
