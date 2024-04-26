@@ -57,7 +57,19 @@ spec:
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Release.Name }}
             - name: Sentry__Environment
-              value: {{ .Release.Name }}
+              value: {{ .Values.sentry.environment | quote }}
+            - name: Sentry__Dsn
+              value: {{ .Values.sentry.dsn | quote }}
+            - name: Sentry__Release
+              value: {{ .Values.sentry.release | quote }}
+            - name: Sentry__MaxBreadcrumbs
+              value: {{ .Values.sentry.maxBreadcrumbs | quote }}
+            - name: Sentry__MaxQueueItems
+              value: {{ .Values.sentry.maxQueueItems | quote }}
+            - name: Sentry__EnableTracing
+              value: {{ .Values.sentry.enableTracing | quote }}
+            - name: Sentry__TracesSampleRate
+              value: {{ .Values.sentry.tracesSampleRate | quote }}
             - name: MaxAnalysisDuration
               value: {{ include "common.secondsToHHMMSS" .Values.gateway.terminationGracePeriodSeconds | quote }}
             - name: FileCloudVerdictSource__Enable

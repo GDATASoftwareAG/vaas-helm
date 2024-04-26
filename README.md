@@ -85,6 +85,8 @@ export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token # URL of the tok
 
 ## Configuring Verdict-as-a-Service
 
+### Cloud lookups
+
 The default configurations are set to provide the best verdict. When you have the need to run this helm-chart without sending the file hashes to our cloud, you can deactivate the cloud lookups with these options:
 
 ```yaml
@@ -99,12 +101,54 @@ With the `hashLookup`, VaaS uses the G DATA Cloud to obtain additional informati
 
 The `allowlistLookup` is a request of the hash to the G DATA Cloud, against a list of files that we know for sure are not malicious, to prevent false positives. Some clean files are still detected by the scanners signatures and the `allowlistLookup` will prevent these files to be detected as `malicious` or `pup`.
 
+### File size limit
+
 If you want to scan larger files, you have to adjust the deployments body size limit in `vaas.gateway.ingress.annotations`. Should looks like this:
 
 ```yaml
 nginx.ingress.kubernetes.io/proxy-body-size: <your maximum filesize>
 nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
 ```
+
+### Configure monitoring with Sentry
+
+To enable Sentry monitoring, you have to set at least your DSN in the `sentry` section of your `values` file:
+
+```yaml
+sentry:
+  dsn: "<your sentry dsn>"
+```
+
+If nothing is set except the DSN, the defaults lead to the following settings:
+
+- Environment: `Production`
+- MaxBreadcrumbs: `50`
+- MaxQueueItems: `50`
+- EnableTracing: `true`
+- TracesSampleRate: `0.5`
+
+These values can be overwritten in the `values` file:
+  
+```yaml
+sentry:
+  dsn: "<your sentry dsn>"
+  environment: "<your environment>"
+  maxBreadcrumbs: <your maxBreadcrumbs>
+  maxQueueItems: <your maxQueueItems>
+  enableTracing: <your enableTracing>
+  tracesSampleRate: <your tracesSampleRate>
+```
+
+In addition, Sentry will always behave as follows:
+
+- CaptureBlockingCalls: `true`
+- AttachStacktrace: `true`
+- ShutdownTimeout: `5s`
+- SendDefaultPii: `false`
+- MinimumBreadcrumbLevel: `Debug`
+- MinimumEventLevel: `Warning`
+
+### Other values
 
 | Parameter                                  | Description                                                                                                 | Value                            |
 | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | -------------------------------- |
