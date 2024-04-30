@@ -80,7 +80,7 @@ export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token # URL of the tok
 * Execute FileScan example in Java SDK example folder
 
 ```bash
-./gradlew fileScan
+gradle fileScan
 ```
 
 ## Configuring Verdict-as-a-Service
