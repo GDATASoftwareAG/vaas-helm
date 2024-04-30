@@ -112,7 +112,8 @@ nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
 
 ### Configure monitoring with Sentry
 
-To enable Sentry monitoring, you have to set at least your DSN in the `sentry` section of your `values` file:
+To enable Sentry monitoring, you have to set at least your DSN in the `sentry` section of your `values` file like in the following example. 
+ASP.NET Core should be selected as the platform for creating a Sentry project.
 
 ```yaml
 sentry:
