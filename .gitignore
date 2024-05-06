@@ -2,8 +2,10 @@
 .vscode/
 *.log
 *-locale.yaml
+*-locale.yml
+*-local.yaml
+*-local.yml
 *.tgz
 .fleet/
-values-local.yaml
 .output/
 Chart.lock
