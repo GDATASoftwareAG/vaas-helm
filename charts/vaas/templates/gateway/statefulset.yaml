@@ -56,6 +56,7 @@ spec:
               value: {{ .Release.Name }}
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Release.Name }}
+              {{- if .Values.sentry }}
               {{- if .Values.sentry.environment }}
             - name: Sentry__Environment
               value: {{ .Values.sentry.environment | quote }}
@@ -83,7 +84,8 @@ spec:
               {{- if .Values.sentry.tracesSampleRate }}              
             - name: Sentry__TracesSampleRate
               value: {{ .Values.sentry.tracesSampleRate | quote }}
-              {{- end }}        
+              {{- end }}
+              {{- end }}
             - name: MaxAnalysisDuration
               value: {{ include "common.secondsToHHMMSS" .Values.gateway.terminationGracePeriodSeconds | quote }}
             - name: FileCloudVerdictSource__Enable
