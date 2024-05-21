@@ -42,7 +42,7 @@ jobs:
 
       - name: Extract tag
         run: |
-          version=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          version=$(grep '^version:' Chart.yaml | sed 's/"//g' | awk '{print $2}')
           echo "Chart version is $version"
           echo "CHART_VERSION=$version" >> $GITHUB_ENV
         working-directory: charts/vaas
@@ -61,4 +61,4 @@ jobs:
           registry: ghcr.io
           registry_username: ${{ secrets.REGISTRY_USERNAME }}
           registry_password: ${{ secrets.CR_TOKEN }}
-          update_dependencies: 'true'        
+          update_dependencies: "true"
