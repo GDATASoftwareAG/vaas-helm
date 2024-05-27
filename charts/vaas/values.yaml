@@ -128,7 +128,7 @@ gateway:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/gateway
     pullPolicy: Always
-    tag: 1.1.0
+    tag: 1.2.0
 
   uploadUrl: "http://vaas/upload"
 
