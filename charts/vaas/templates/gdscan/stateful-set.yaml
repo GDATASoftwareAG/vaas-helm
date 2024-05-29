@@ -32,13 +32,6 @@ spec:
         {{- include "gdscan.selectorLabels" . | nindent 8 }}
     spec:
       {{- include "gdscan.imagePullSecrets" . | nindent 6 }}
-      volumes:
-        - name: server-tmp
-          emptyDir: {}
-        - name: client-tmp
-          emptyDir: {}
-        - name: server-var-log
-          emptyDir: {}
       containers:
         - name: {{ .Values.gdscan.client.name }}
           image: "{{ .Values.gdscan.client.image.repository }}:{{ .Values.gdscan.client.image.tag | default .Chart.AppVersion }}"
@@ -48,8 +41,6 @@ spec:
           {{- end }}
           volumeMounts:
             - name: samples
-              mountPath: /tmp/scan
-            - name: client-tmp
               mountPath: /tmp
           resources:
             {{- toYaml .Values.gdscan.client.resources | nindent 12 }}

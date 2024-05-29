@@ -35,8 +35,6 @@ spec:
             medium : "Memory"
           {{- end }}
         {{- end }}
-        - name: client-tmp
-          emptyDir: {}
       {{- include "gdscan.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: {{ .Values.gdscan.client.name }}
@@ -47,8 +45,6 @@ spec:
           {{- end }}
           volumeMounts:
             - name: samples
-              mountPath: /tmp/scan
-            - name: client-tmp
               mountPath: /tmp
           resources:
             {{- toYaml .Values.gdscan.client.resources | nindent 12 }}
