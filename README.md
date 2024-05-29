@@ -142,7 +142,6 @@ sentry:
 
 In addition, Sentry will always behave as follows:
 
-- CaptureBlockingCalls: `true`
 - AttachStacktrace: `true`
 - ShutdownTimeout: `5s`
 - SendDefaultPii: `false`
