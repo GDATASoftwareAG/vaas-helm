@@ -160,6 +160,7 @@ In addition, Sentry will always behave as follows:
 | `gateway.ingress.annotations`              | Additional annotations for Ingress                                                                          | `{}`                             |
 | `gateway.ingress.hosts`                    | Hostnames and paths for Ingress                                                                             | `[]`                             |
 | `gateway.ingress.tls`                      | TLS configuration for Ingress                                                                               | `[]`                             |
+| `gateway.ingress.className`                | Class name for Ingress                                                                                      | `""`                             |
 | `gateway.authentication.authority`         | Authority for authentication                                                                                | `""`                             |
 | `gateway.nameOverride`                     | Overrides the application name                                                                              | `""`                             |
 | `gateway.fullnameOverride`                 | Overrides the full name                                                                                     | `""`                             |
@@ -183,6 +184,7 @@ In addition, Sentry will always behave as follows:
 | `gdscan.replicaCount`                      | Number of replicas for the gdscan deployment                                                                | `1``                             |
 | `gdscan.terminationGracePeriodSeconds`     | Max time in seconds for scans to complete. Set to same value as ```gateway.terminationGracePeriodSeconds``` | `30`                             |
 | `mini-identity-provider.nodeSelector`      | mini-identity-provider Node labels for pod assignment                                                       | `{}`                             |
+| `mini-identity-provider.ingress.className` | Class name for Ingress                                                                                      | `""`                             |
 
 ### Production environment
 
@@ -195,6 +197,7 @@ The default hostname is "vaas". To change it and provide a tls configuration, ad
 mini-identity-provider:
   issuer: "http://vaas/auth"
   ingress:
+    className: ""
     hosts:
     - host: vaas
       paths:
@@ -207,6 +210,7 @@ mini-identity-provider:
 
 gateway:
   ingress:
+    className: ""
     hosts:
       - host: vaas
         paths:
@@ -233,3 +237,8 @@ Replace the "vaas" with your hostname in the following values:
 * gateway.ingress.0.host
 * gateway.ingress.1.host
 * gateway.uploadUrl
+
+If you require a different ingressClassName than "default", set:
+
+* gateway.ingress.className
+* mini-identity-provider.ingress.className
