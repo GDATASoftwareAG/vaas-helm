@@ -91,5 +91,6 @@ spec:
   egress:
     - ports:
         - port: {{ .Values.gdscan.autoUpdate.networkPolicy.k8sApiPort }}
+        - port: 443
 {{- end }}
 {{- end}}

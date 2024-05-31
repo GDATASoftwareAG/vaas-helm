@@ -24,4 +24,6 @@ spec:
         - port: 80  # VerdictRequestForUrl
         - port: 6379 # Redis
         - port: 8080 # GdScan
+        - port: 53 # DNS
+          protocol: UDP
 {{- end }}
