@@ -242,3 +242,21 @@ If you require a different ingressClassName than "default", set:
 
 * gateway.ingress.className
 * mini-identity-provider.ingress.className
+
+#### Zero-trust network configurations
+
+If you are using a zero-trust network configuration, network policies have to be enabled (default). The update
+CronJob requires access to the Kubernetes API. If the update fails with logs like
+
+```
+E0603 09:35:50.444603       1 memcache.go:265] couldn't get current server API group list: Get "https://10.96.0.1:443/api?timeout=32s": dial tcp 10.96.0.1:443: i/o timeout
+```
+
+you have to configure the k8sApiPort:
+
+```
+gdscan:
+  autoUpdate:
+    networkPolicy:
+      k8sApiPort: 6443
+```
