@@ -30,7 +30,7 @@ helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n va
 helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
 ```
 
-# Verdict-as-a-Service on-premise
+# Verdict-as-a-Service on-premises
 
 ## Getting started
 
