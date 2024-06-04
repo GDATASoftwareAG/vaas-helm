@@ -6,6 +6,11 @@ on:
       - README.md
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - README.md
 
 jobs:
   sync-readme:
@@ -38,6 +43,7 @@ jobs:
           kramdoc -o README.adoc README.md
 
       - name: Copy README.md to GitLab repo
+        if: github.ref == 'refs/heads/main'
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
