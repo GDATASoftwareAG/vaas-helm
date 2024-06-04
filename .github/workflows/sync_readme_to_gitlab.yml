@@ -52,7 +52,7 @@ jobs:
           cd gitlab-repo
           git checkout update-external-readme || git checkout -b update-external-readme
           mkdir -p modules/ROOT/external/vaas-helm
-          cp ../README.adoc modules/ROOT/external/vaas-helm/README.adoc
-          git add modules/ROOT/external/vaas-helm/README.adoc
+          cp ../README.adoc modules/ROOT/pages/guides/vaasHelmReadme.adoc
+          git add modules/ROOT/pages/guides/vaasHelmReadme.adoc
           git commit -m "Update README.adoc from GitHub"
           git push --set-upstream origin update-external-readme -o merge_request.create -o merge_request.target=develop -o merge_request.title="Update README.adoc from GitHub Vaas-Helm"
