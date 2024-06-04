@@ -12,29 +12,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install Git
-      run: |
-        sudo apt update
-        sudo apt install -y git
+      - name: Install Git
+        run: |
+          sudo apt update
+          sudo apt install -y git
 
-    - name: Set up Git configuration
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Set up Git configuration
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Copy README.md to GitLab repo
-      env:
-        GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
-      run: |
-        git clone https://oauth2:${GITLAB_TOKEN}@${GITLAB_REPO}.git gitlab-repo
-        cd gitlab-repo
-        git checkout update-external-readme || git checkout -b update-external-readme
-        mkdir -p modules/ROOT/external/vaas-helm
-        cp ../README.md modules/ROOT/external/vaas-helm/README.md
-        git add modules/ROOT/external/vaas-helm/README.md
-        git commit -m "Update README.md from GitHub"
-        git push --set-upstream origin update-external-readme -o merge_request.create -o merge_request.target=develop -o merge_request.title="Update README.md from GitHub Vaas-Helm"
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: install kramdown
+        run: |
+          gem install kramdown-asciidoc
+
+      - name: Convert README.md to AsciiDoc
+        run: |
+          kramdoc -o README.adoc README.md
+
+      - name: Copy README.md to GitLab repo
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
+        run: |
+          git clone https://oauth2:${GITLAB_TOKEN}@${GITLAB_REPO}.git gitlab-repo
+          cd gitlab-repo
+          git checkout update-external-readme || git checkout -b update-external-readme
+          mkdir -p modules/ROOT/external/vaas-helm
+          cp ../README.adoc modules/ROOT/external/vaas-helm/README.adoc
+          git add modules/ROOT/external/vaas-helm/README.adoc
+          git commit -m "Update README.adoc from GitHub"
+          git push --set-upstream origin update-external-readme -o merge_request.create -o merge_request.target=develop -o merge_request.title="Update README.adoc from GitHub Vaas-Helm"
