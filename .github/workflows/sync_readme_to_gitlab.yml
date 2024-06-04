@@ -51,7 +51,7 @@ jobs:
           git clone https://oauth2:${GITLAB_TOKEN}@${GITLAB_REPO}.git gitlab-repo
           cd gitlab-repo
           git checkout update-external-readme || git checkout -b update-external-readme
-          mkdir -p modules/ROOT/external/vaas-helm
+          mkdir -p modules/ROOT/pages/guides
           cp ../README.adoc modules/ROOT/pages/guides/vaasHelmReadme.adoc
           git add modules/ROOT/pages/guides/vaasHelmReadme.adoc
           git commit -m "Update README.adoc from GitHub"
