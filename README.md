@@ -8,7 +8,7 @@ Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
 To access the VaaS docker containers, the image pull secret has to be set in the `global.secret.dockerconfigjson` variable.
 
-`values`-File for a minimum example deployment:
+minimum `values`-File for an example deployment:
 
 ```yaml
 global:
@@ -30,7 +30,7 @@ helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n va
 helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
 ```
 
-# Verdict-as-a-Service on-premise
+# Verdict-as-a-Service on-premises
 
 ## Getting started
 

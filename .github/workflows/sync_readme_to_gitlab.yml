@@ -1,0 +1,65 @@
+name: Sync README.md to GitLab
+
+on:
+  push:
+    paths:
+      - README.md
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - README.md
+
+jobs:
+  sync-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Git
+        run: |
+          sudo apt update
+          sudo apt install -y git
+
+      - name: Set up Git configuration
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: install kramdown
+        run: |
+          gem install kramdown-asciidoc
+
+      - name: Convert README.md to AsciiDoc
+        run: |
+          kramdoc -o README.adoc README.md
+
+      - name: Copy README.md to GitLab repo
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
+        run: |
+          git clone https://oauth2:${GITLAB_TOKEN}@${GITLAB_REPO}.git gitlab-repo
+          cd gitlab-repo
+          git checkout update-external-readme || git checkout -b update-external-readme
+          mkdir -p modules/ROOT/pages/guides
+          cp ../README.adoc modules/ROOT/pages/guides/vaasHelmReadme.adoc
+          git add modules/ROOT/pages/guides/vaasHelmReadme.adoc
+          git commit -m "Update README.adoc from GitHub"
+          git push --set-upstream origin update-external-readme -o merge_request.create -o merge_request.target=develop -o merge_request.title="Update README.adoc from GitHub Vaas-Helm"
+
+      - name: Microsoft Teams Notification
+        uses: skitionek/notify-microsoft-teams@master
+        if: github.ref == 'refs/heads/main'
+        with:
+          webhook_url: ${{ secrets.TECH_WRITING_TEAMS_WEBHOOK }}
+          overwrite: "{title: `VaaS: README.md was updated and commited`, sections: [{activityTitle: 'README.md was updated', activitySubtitle: `The README.md was updated`, activityImage: 'https://adaptivecards.io/content/cats/1.png'}], themeColor: '##ffb700'}"
