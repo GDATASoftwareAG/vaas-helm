@@ -48,7 +48,7 @@ jobs:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
         run: |
-          git clone https://oauth2:${GITLAB_TOKEN}@${GITLAB_REPO}.git gitlab-repo
+          git clone https://vaasHelmReadmeAutomation:${GITLAB_TOKEN}@${GITLAB_REPO}.git gitlab-repo
           cd gitlab-repo
           git checkout update-external-readme || git checkout -b update-external-readme
           mkdir -p modules/ROOT/pages/guides
