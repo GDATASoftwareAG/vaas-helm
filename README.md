@@ -13,7 +13,7 @@ global:
   imagePullSecrets:
     - registry
   secret:
-    dockerconfigjson: "$$_BASE64_ENCODED_JSON_CONTAINING_TOKEN_$$"
+    dockerconfigjson: "${BASE64_ENCODED_JSON_CONTAINING_TOKEN}"
 ```
 
 * Install Verdict-as-a-Service:
