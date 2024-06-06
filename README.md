@@ -1,4 +1,5 @@
-# Verdict-as-a-Service Helm Chart
+# Verdict-as-a-Service
+## Verdict-as-a-Service Helm Chart
 
 Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
@@ -28,7 +29,7 @@ helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n va
 helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
 ```
 
-# Getting started with Verdict-as-a-Service on-premise
+## Getting started with Verdict-as-a-Service on-premise
 
 Tested prerequisites:
 
@@ -79,7 +80,7 @@ export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token # URL of the tok
 gradle fileScan
 ```
 
-# Configuring Verdict-as-a-Service
+## Configuring Verdict-as-a-Service
 
 ### Cloud lookups
 
@@ -182,7 +183,7 @@ In addition, Sentry will always behave as follows:
 | `mini-identity-provider.nodeSelector`      | mini-identity-provider Node labels for pod assignment                                                       | `{}`                             |
 | `mini-identity-provider.ingress.className` | Class name for Ingress                                                                                      | `""`                             |
 
-# Production environment
+## Production environment
 
 In production you will have to configure a few values.
 
