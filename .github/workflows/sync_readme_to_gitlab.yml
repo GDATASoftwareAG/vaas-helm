@@ -40,7 +40,7 @@ jobs:
 
       - name: Convert README.md to AsciiDoc
         run: |
-          kramdoc -o README.adoc --format=markdown README.md
+          kramdoc -o README.adoc README.md
 
       - name: Copy README.md to GitLab repo
         if: github.ref == 'refs/heads/main'
