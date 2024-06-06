@@ -148,7 +148,7 @@ In addition, Sentry will always behave as follows:
 ### Other values
 
 | Parameter                                  | Description                                                                                                 | Value                            |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | -------------------------------- |
+|--------------------------------------------|-------------------------------------------------------------------------------------------------------------|----------------------------------|
 | `global.imagePullSecrets`                  | List of image pull secrets                                                                                  | `- name: registry`               |
 | `global.secret.dockerconfigjson`           | Docker authentication configuration                                                                         | `""`                             |
 | `cloud.hashLookup.enabled`                 | Enable/Disable the cloud hash lookup                                                                        | `true`                           |
