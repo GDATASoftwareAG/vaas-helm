@@ -2,7 +2,7 @@
 
 Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
-### Install Verdict-as-a-Service
+### Install Verdict-as-a-Service via helm
 
 * Create a minimal values.yaml file. 
 
