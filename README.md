@@ -2,13 +2,12 @@
 
 Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
-## Install Verdict-as-a-Service
+### Install Verdict-as-a-Service
 
-1. Create a minimal values.yaml file:
+* Create a minimal values.yaml file. 
+`values`-File for a minimum example deployment:
 
-To access the VaaS docker containers, the image pull secret has to be set in the `global.secret.dockerconfigjson` variable.
-
-minimum `values`-File for an example deployment:
+  To access the VaaS docker containers, the imagePullSecret has to be set in the `global.secret.dockerconfigjson` variable.
 
 ```yaml
 global:
@@ -18,21 +17,19 @@ global:
     dockerconfigjson: "$$_BASE64_ENCODED_JSON_CONTAINING_TOKEN_$$"
 ```
 
-2. Install Verdict-as-a-Service:
+* Install Verdict-as-a-Service:
 
 ```bash
 helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas --create-namespace
 ```
 
-### Updating Verdict-as-a-Service
+* Updating Verdict-as-a-Service
 
 ```bash
 helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
 ```
 
-# Verdict-as-a-Service on-premises
-
-## Getting started
+# Getting started with Verdict-as-a-Service on-premise
 
 Tested prerequisites:
 
@@ -83,7 +80,7 @@ export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token # URL of the tok
 gradle fileScan
 ```
 
-## Configuring Verdict-as-a-Service
+# Configuring Verdict-as-a-Service
 
 ### Cloud lookups
 
@@ -186,11 +183,11 @@ In addition, Sentry will always behave as follows:
 | `mini-identity-provider.nodeSelector`      | mini-identity-provider Node labels for pod assignment                                                       | `{}`                             |
 | `mini-identity-provider.ingress.className` | Class name for Ingress                                                                                      | `""`                             |
 
-### Production environment
+# Production environment
 
 In production you will have to configure a few values.
 
-#### Ingress
+### Ingress
 The default hostname is "vaas". To change it and provide a tls configuration, add this to your values.yaml:
 
 ```yaml
@@ -243,7 +240,7 @@ If you require a different ingressClassName than "default", set:
 * gateway.ingress.className
 * mini-identity-provider.ingress.className
 
-#### Zero-trust network configurations
+### Zero-trust network configurations
 
 If you are using a zero-trust network configuration, network policies have to be enabled (default). The update
 CronJob requires access to the Kubernetes API. If the update fails with logs like
