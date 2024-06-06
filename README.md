@@ -5,7 +5,6 @@ Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 ### Install Verdict-as-a-Service
 
 * Create a minimal values.yaml file. 
-`values`-File for a minimum example deployment:
 
   To access the VaaS docker containers, the imagePullSecret has to be set in the `global.secret.dockerconfigjson` variable.
 
