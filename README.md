@@ -61,7 +61,7 @@ minikube start --cpus="6" --memory="8g" --addons ingress
 
 ### Use Verdict-as-a-Service with the Java SDK
 
-* Make sure that Java 17 & Gradle is installed
+* Make sure that Java 17 & Gradle is installed.
 
 * Set these environment variables for testing your local instance
 
