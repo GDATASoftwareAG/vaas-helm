@@ -147,6 +147,8 @@ In addition, Sentry will always behave as follows:
 
 ### Other values
 
+This table shows all values:
+
 | Parameter                                  | Description                                                                                                 | Value                            |
 |--------------------------------------------|-------------------------------------------------------------------------------------------------------------|----------------------------------|
 | `global.imagePullSecrets`                  | List of image pull secrets                                                                                  | `- name: registry`               |
