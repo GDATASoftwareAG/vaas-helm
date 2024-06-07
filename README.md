@@ -1,7 +1,7 @@
 # Verdict-as-a-Service
 ## Verdict-as-a-Service Helm Chart
 
-Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
+Vaas helm is a chart for deploying Verdict-as-a-Service on-premise
 
 ### Install Verdict-as-a-Service via helm
 
