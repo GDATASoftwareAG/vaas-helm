@@ -3,6 +3,8 @@
 
 Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
+<!--- #InstallVaaSHelm --->
+
 ### Install Verdict-as-a-Service via helm
 
 * Create a minimal values.yaml file. 
@@ -28,6 +30,7 @@ helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n va
 ```bash
 helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
 ```
+<!--- #InstallVaaSHelm --->
 
 ## Getting started with Verdict-as-a-Service on-premise
 
