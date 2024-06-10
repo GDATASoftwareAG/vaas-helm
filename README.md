@@ -3,7 +3,7 @@
 
 Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
-<!--- #InstallVaaSHelm --->
+<!-- tag::InstallVaaSHelm[] -->
 
 ### Install Verdict-as-a-Service via helm
 
@@ -30,9 +30,9 @@ helm install vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n va
 ```bash
 helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n vaas
 ```
-<!--- #InstallVaaSHelm --->
+<!-- end::InstallVaaSHelm[] -->
 
-<!--- #GettingStarted --->
+<!-- tag::GettingStarted[] -->
 
 ## Getting started with Verdict-as-a-Service on-premise
 
@@ -65,9 +65,9 @@ minikube start --cpus="6" --memory="8g" --addons ingress
 
 * Check the "Workload status" in the Minikube dashboard and wait until it is green.
 
-<!--- #GettingStarted --->
+<!-- end::GettingStarted[] -->
 
-<!--- #UseVaaSJavaSDK --->
+<!-- tag::UseVaaSJavaSDK[] -->
 ### Use Verdict-as-a-Service with the Java SDK
 
 * Make sure that Java 17 & Gradle is installed.
@@ -88,11 +88,11 @@ export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token # URL of the tok
 gradle fileScan
 ```
 
-<!--- #UseVaaSJavaSDK --->
+<!-- end::UseVaaSJavaSDK[] -->
 
 ## Configuring Verdict-as-a-Service
 
-<!--- #CloudLookups --->
+<!-- tag::CloudLookups[] -->
 
 ### Cloud lookups
 
@@ -110,9 +110,9 @@ With the `hashLookup`, VaaS uses the G DATA Cloud to obtain additional informati
 
 The `allowlistLookup` is a request of the hash to the G DATA Cloud, against a list of files that we know for sure are not malicious, to prevent false positives. Some clean files are still detected by the scanners signatures and the `allowlistLookup` will prevent these files to be detected as `malicious` or `pup`.
 
-<!--- #CloudLookups --->
+<!-- end::CloudLookups[] -->
 
-<!--- #FileSize --->
+<!-- tag::FileSize[] -->
 
 ### File size limit
 
@@ -123,9 +123,9 @@ nginx.ingress.kubernetes.io/proxy-body-size: <your maximum filesize>
 nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
 ```
 
-<!--- #FileSize --->
+<!-- end::FileSize[] -->
 
-<!--- #ConfigureMonitoring --->
+<!-- tag::ConfigureMonitoring[] -->
 
 ### Configure monitoring with Sentry
 
@@ -165,9 +165,9 @@ In addition, Sentry will always behave as follows:
 - MinimumBreadcrumbLevel: `Debug`
 - MinimumEventLevel: `Warning`
 
-<!--- #ConfigureMonitoring --->
+<!-- end::ConfigureMonitoring[] -->
 
-<!--- #OtherValues --->
+<!-- tag::OtherValues -->
 
 ### Other values
 
@@ -206,9 +206,9 @@ In addition, Sentry will always behave as follows:
 | gdscan.terminationGracePeriodSeconds      | Max time in seconds for scans to complete. Set to same value as gateway.terminationGracePeriodSeconds | 30                             |
 | mini-identity-provider.nodeSelector       | mini-identity-provider Node labels for pod assignment                                                 | {}                             |
 | mini-identity-provider.ingress.className  | Class name for Ingress                                                                                | ""                             |
-<!--- #OtherValues --->
+<!-- end::OtherValues[] -->
 
-<!--- #ProductionEnviroment --->
+<!-- tag::ProductionEnviroment[] -->
 
 ## Production environment
 
@@ -285,4 +285,4 @@ gdscan:
       k8sApiPort: 6443
 ```
 
-<!--- #ProductionEnviroment --->
+<!-- end::ProductionEnviroment[] -->
