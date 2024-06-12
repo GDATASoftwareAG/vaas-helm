@@ -167,7 +167,7 @@ In addition, Sentry will always behave as follows:
 
 <!-- end::ConfigureMonitoring[] -->
 
-<!-- tag::OtherValues -->
+<!-- tag::OtherValues[] -->
 
 ### Other values
 
@@ -214,7 +214,10 @@ In addition, Sentry will always behave as follows:
 
 In production you will have to configure a few values.
 
+<!-- tag::ConfHostname[] -->
+
 ### Ingress
+
 The default hostname is "vaas". To change it and provide a tls configuration, add this to your values.yaml:
 
 ```yaml
@@ -261,6 +264,8 @@ Replace the "vaas" with your hostname in the following values:
 * gateway.ingress.0.host
 * gateway.ingress.1.host
 * gateway.uploadUrl
+
+<!-- end::ConfHostname[] -->
 
 If you require a different ingressClassName than "default", set:
 
