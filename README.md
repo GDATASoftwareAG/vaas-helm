@@ -167,9 +167,9 @@ In addition, Sentry will always behave as follows:
 
 <!-- end::ConfigureMonitoring[] -->
 
-<!-- tag::OtherValues[] -->
-
 ### Other values
+
+<!-- tag::OtherValues[] -->
 
 | Parameter                                 | Description                                                                                           | Value                          |
 |-------------------------------------------|-------------------------------------------------------------------------------------------------------|--------------------------------|
@@ -206,6 +206,7 @@ In addition, Sentry will always behave as follows:
 | gdscan.terminationGracePeriodSeconds      | Max time in seconds for scans to complete. Set to same value as gateway.terminationGracePeriodSeconds | 30                             |
 | mini-identity-provider.nodeSelector       | mini-identity-provider Node labels for pod assignment                                                 | {}                             |
 | mini-identity-provider.ingress.className  | Class name for Ingress                                                                                | ""                             |
+
 <!-- end::OtherValues[] -->
 
 <!-- tag::ProductionEnviroment[] -->
