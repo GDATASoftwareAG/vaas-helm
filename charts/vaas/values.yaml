@@ -24,7 +24,7 @@ mini-identity-provider:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider
     pullPolicy: Always
-    tag: 0.1.20
+    tag: "0.1.20"
 
   service:
     type: ClusterIP
@@ -128,7 +128,7 @@ gateway:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/gateway
     pullPolicy: Always
-    tag: 1.2.0
+    tag: "1.2.0"
 
   uploadUrl: "http://vaas/upload"
 
@@ -162,7 +162,7 @@ gdscan:
     image:
       repository: ghcr.io/gdatasoftwareag/vaas/scanner
       pullPolicy: Always
-      tag: 1
+      tag: "1"
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true
@@ -227,7 +227,7 @@ gdscan:
     image:
       registry: docker.io
       repository: bitnami/kubectl
-      tag: 1.29
+      tag: "1.29"
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true
