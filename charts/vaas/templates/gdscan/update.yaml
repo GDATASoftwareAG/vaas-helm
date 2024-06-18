@@ -58,7 +58,16 @@ spec:
           {{- with .Values.gdscan.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
-          {{- end }}       
+          {{- end }}
+          {{- include "gdscan.imagePullSecrets" . | nindent 10 }}
+          {{- if gt (len (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets) 0 }}
+          volumes:
+            {{- range (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .name }} 
+            {{- end }}
+          {{- end }}
           containers:
             - name: kubectl
               image: "{{ .Values.gdscan.autoUpdate.image.registry }}/{{ .Values.gdscan.autoUpdate.image.repository }}:{{ .Values.gdscan.autoUpdate.image.tag }}"
@@ -74,10 +83,17 @@ spec:
 {{- else }}
                 RESOURCE="deployment/{{ include "gdscan.fullname" . }}"
 {{- end }}
-                LATEST=$(/app/get-latest-docker-tag {{ .Values.gdscan.autoUpdate.image.repository }} {{ .Values.gdscan.autoUpdate.image.registry }} {{ .Values.gdscan.autoUpdate.image.tag }})
+                LATEST=$(/app/get-latest-docker-tag {{ .Values.gdscan.client.image.repository }} {{ .Values.gdscan.autoUpdate.image.registry }} {{ .Values.gdscan.autoUpdate.image.tag }})
                 IMAGE="{{ .Values.gdscan.autoUpdate.image.registry }}/{{ .Values.gdscan.autoUpdate.image.repository }}:$LATEST"
                 echo "Setting image of $RESOURCE to $IMAGE"
                 #kubectl set-image -n {{ .Release.Namespace }} $RESOURCE $IMAGE
+              {{- if gt (len (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets) 0 }}
+              volumeMounts:
+                {{- range (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets }}
+                - name: {{ .name }}
+                  mountPath: "/home/appuser/.image_pull_secrets/{{ .name }}"
+                {{- end }}
+              {{- end }}
 {{- if .Values.gdscan.autoUpdate.networkPolicy.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
@@ -95,6 +111,7 @@ spec:
   egress:
     - ports:
         - port: {{ .Values.gdscan.autoUpdate.networkPolicy.k8sApiPort }}
+        - port: 443
 {{- end }}
 {{- end}}
 ---
