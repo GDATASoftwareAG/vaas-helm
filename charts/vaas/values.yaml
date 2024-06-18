@@ -24,7 +24,7 @@ mini-identity-provider:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider
     pullPolicy: Always
-    tag: "0.1.20"
+    tag: "0.1.21"
 
   service:
     type: ClusterIP
@@ -227,7 +227,7 @@ gdscan:
     image:
       registry: docker.io
       repository: bitnami/kubectl
-      tag: "1.29"
+      tag: "1.30"
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true
