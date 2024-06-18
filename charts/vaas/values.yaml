@@ -225,9 +225,9 @@ gdscan:
 
   autoUpdate:
     image:
-      registry: docker.io
-      repository: bitnami/kubectl
-      tag: "1.30"
+      registry: ghcr.io/gdatasoftwareag
+      repository: vaas/scanner-updater
+      tag: "0.4.1"
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true
