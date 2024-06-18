@@ -60,13 +60,15 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- include "gdscan.imagePullSecrets" . | nindent 10 }}
-          {{- if gt (len (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets) 0 }}
+          {{- if (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets}}
+          {{- if (gt (len (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets) 0) }}
           volumes:
             {{- range (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets }}
             - name: {{ .name }}
               secret:
                 secretName: {{ .name }} 
             {{- end }}
+          {{- end }}
           {{- end }}
           containers:
             - name: kubectl
@@ -87,12 +89,14 @@ spec:
                 IMAGE="{{ .Values.gdscan.autoUpdate.image.registry }}/{{ .Values.gdscan.autoUpdate.image.repository }}:$LATEST"
                 echo "Setting image of $RESOURCE to $IMAGE"
                 #kubectl set-image -n {{ .Release.Namespace }} $RESOURCE $IMAGE
-              {{- if gt (len (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets) 0 }}
+              {{- if (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets}}
+              {{- if (gt (len (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets) 0) }}
               volumeMounts:
                 {{- range (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets }}
                 - name: {{ .name }}
                   mountPath: "/home/appuser/.image_pull_secrets/{{ .name }}"
                 {{- end }}
+              {{- end }}
               {{- end }}
 {{- if .Values.gdscan.autoUpdate.networkPolicy.enabled }}
 ---
