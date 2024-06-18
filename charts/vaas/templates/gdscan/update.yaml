@@ -65,15 +65,19 @@ spec:
               {{- if .Values.gdscan.autoUpdate.containerSecurityContext.enabled }}
               securityContext: {{- omit .Values.gdscan.autoUpdate.containerSecurityContext "enabled" | toYaml | nindent 16 }}
               {{- end }}                
-              command:
-                - "kubectl"
-                - "rollout"
-                - "restart"
+
+              command: ["sh", "-c"]
+              args:
+              - |
 {{- if and (.Values.gdscan.persistence.enabled) (eq .Values.gdscan.persistence.accessMode "ReadWriteOnce" ) }}
-                - "statefulset/{{ include "gdscan.fullname" . }}"
+                RESOURCE="statefulset/{{ include "gdscan.fullname" . }}"
 {{- else }}
-                - "deployment/{{ include "gdscan.fullname" . }}"
+                RESOURCE="deployment/{{ include "gdscan.fullname" . }}"
 {{- end }}
+                LATEST=$(/app/get-latest-docker-tag {{ .Values.gdscan.autoUpdate.image.repository }} {{ .Values.gdscan.autoUpdate.image.registry }} {{ .Values.gdscan.autoUpdate.image.tag }})
+                IMAGE="{{ .Values.gdscan.autoUpdate.image.registry }}/{{ .Values.gdscan.autoUpdate.image.repository }}:$LATEST"
+                echo "Setting image of $RESOURCE to $IMAGE"
+                #kubectl set-image -n {{ .Release.Namespace }} $RESOURCE $IMAGE
 {{- if .Values.gdscan.autoUpdate.networkPolicy.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
@@ -93,3 +97,4 @@ spec:
         - port: {{ .Values.gdscan.autoUpdate.networkPolicy.k8sApiPort }}
 {{- end }}
 {{- end}}
+---
