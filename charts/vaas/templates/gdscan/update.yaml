@@ -58,22 +58,45 @@ spec:
           {{- with .Values.gdscan.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
-          {{- end }}       
+          {{- end }}
+          {{- include "gdscan.imagePullSecrets" . | nindent 10 }}
+          volumes:
+            - name: docker
+              emptyDir: {}
+            {{- range (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .name }}
+                items:
+                - key: .dockerconfigjson
+                  path: {{ .name }}.json
+            {{- end }}
           containers:
-            - name: kubectl
+            - name: updater
               image: "{{ .Values.gdscan.autoUpdate.image.registry }}/{{ .Values.gdscan.autoUpdate.image.repository }}:{{ .Values.gdscan.autoUpdate.image.tag }}"
               {{- if .Values.gdscan.autoUpdate.containerSecurityContext.enabled }}
               securityContext: {{- omit .Values.gdscan.autoUpdate.containerSecurityContext "enabled" | toYaml | nindent 16 }}
               {{- end }}                
-              command:
-                - "kubectl"
-                - "rollout"
-                - "restart"
+              command: ["sh", "-c"]
+              args:
+              - |
+                set -xe
 {{- if and (.Values.gdscan.persistence.enabled) (eq .Values.gdscan.persistence.accessMode "ReadWriteOnce" ) }}
-                - "statefulset/{{ include "gdscan.fullname" . }}"
+                RESOURCE="statefulset/{{ include "gdscan.fullname" . }}"
 {{- else }}
-                - "deployment/{{ include "gdscan.fullname" . }}"
+                RESOURCE="deployment/{{ include "gdscan.fullname" . }}"
 {{- end }}
+                LATEST=$(/app/get-latest-docker-tag {{ .Values.gdscan.client.image.repository }} {{ .Values.gdscan.client.image.tag }})
+                IMAGE="{{ .Values.gdscan.client.image.repository }}:$LATEST"
+                echo "Setting image of $RESOURCE to $IMAGE"
+                kubectl set image -n {{ .Release.Namespace }} $RESOURCE client=$IMAGE
+              volumeMounts:
+                - name: docker
+                  mountPath: /home/appuser/.docker
+                {{- range (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets }}
+                - name: {{ .name }}
+                  mountPath: "/home/appuser/.image_pull_secrets/"
+                {{- end }}
 {{- if .Values.gdscan.autoUpdate.networkPolicy.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
@@ -91,5 +114,6 @@ spec:
   egress:
     - ports:
         - port: {{ .Values.gdscan.autoUpdate.networkPolicy.k8sApiPort }}
+        - port: 443
 {{- end }}
 {{- end}}
