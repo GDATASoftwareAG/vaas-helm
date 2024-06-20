@@ -30,6 +30,8 @@ echo '{
 }' | sed "s/TO_BE_REPLACED/$(echo "username:token" | base64 -w 0 )/g" | base64 -w 0
 ```
 
+You need to substitute the username and password with the credentials we provided to you.
+
 * Install Verdict-as-a-Service:
 
 ```bash
