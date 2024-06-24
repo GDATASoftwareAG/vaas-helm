@@ -16,8 +16,21 @@ global:
   imagePullSecrets:
     - registry
   secret:
-    dockerconfigjson: "BASE64_ENCODED_JSON_CONTAINING_TOKEN"
+    dockerconfigjson: "BASE64_ENCODED_JSON_CONTAINING_DOCKER_AUTH_CONFIG"
 ```
+
+You can generate this value with a bash command like this
+```bash
+echo '{
+        "auths": {
+                "ghcr.io": {
+                        "auth": "TO_BE_REPLACED"
+                }
+        }
+}' | sed "s/TO_BE_REPLACED/$(echo "username:token" | base64 -w 0 )/g" | base64 -w 0
+```
+
+You need to substitute the username and password with the credentials we provided to you.
 
 * Install Verdict-as-a-Service:
 
@@ -172,7 +185,7 @@ In addition, Sentry will always behave as follows:
 <!-- tag::OtherValues[] -->
 
 | Parameter                                 | Description                                                                                           | Value                          |
-|-------------------------------------------|-------------------------------------------------------------------------------------------------------|--------------------------------|
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------ |
 | global.imagePullSecrets                   | List of image pull secrets                                                                            | - name: registry               |
 | global.secret.dockerconfigjson            | Docker authentication configuration                                                                   | ""                             |
 | cloud.hashLookup.enabled                  | Enable/Disable the cloud hash lookup                                                                  | true                           |
