@@ -24,14 +24,17 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{- define "gateway.imagePullSecrets" -}}
+{{- if or (gt (len .Values.global.imagePullSecrets) 0) ((.Values.global.secret).dockerconfigjson) -}}
 imagePullSecrets:
   {{- range .Values.global.imagePullSecrets }}
   - name: {{ . }}
-  {{- end }}
-  {{- if .Values.imagePullSecret }}
-  - name: {{ .Release.Name }}-registry-secret
-  {{- end }}
+  {{- end -}}
+  {{- if (.Values.global.secret).dockerconfigjson }}
+  - name: registry
+  {{- end -}}
 {{- end -}}
+{{ end -}}
+
 
 {{/*
 Create chart name and version as used by the chart label.

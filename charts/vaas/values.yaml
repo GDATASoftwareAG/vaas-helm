@@ -147,6 +147,7 @@ gateway:
   gdscanUrl: "http://gdscan:8080/scan/body"
 
 gdscan:
+  imagePullSecrets: []
   replicaCount: 1
   deploymentStrategy: "RollingUpdate"
   client:

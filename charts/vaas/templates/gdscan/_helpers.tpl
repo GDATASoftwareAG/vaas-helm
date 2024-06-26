@@ -43,15 +43,19 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{- define "gdscan.imagePullSecrets" -}}
-
-{{- $imagePullSecrets := concat (((.Values.global | default dict).imagePullSecrets)| default list) (.Values.gdscan.imagePullSecrets | default list) -}}
-{{- if gt (len $imagePullSecrets) 0 -}}
+{{- if or (gt (len .Values.global.imagePullSecrets) 0) (gt (len .Values.gdscan.imagePullSecrets) 0) ((.Values.global.secret).dockerconfigjson)  -}}
 imagePullSecrets:
-  {{- range $imagePullSecrets }}
+  {{- range .Values.global.imagePullSecrets }}
   - name: {{ . }}
-  {{- end }}
-{{- end }}
-{{- end }}
+  {{- end -}}
+  {{- range .Values.gdscan.imagePullSecrets }}
+  - name: {{ . }}
+  {{- end -}}
+  {{- if (.Values.global.secret).dockerconfigjson }}
+  - name: gdscanregistry
+  {{- end -}}
+{{- end -}}
+{{ end -}}
 
 {{/*
 Selector labels
