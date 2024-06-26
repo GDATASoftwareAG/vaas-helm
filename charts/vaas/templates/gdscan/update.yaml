@@ -115,5 +115,6 @@ spec:
     - ports:
         - port: {{ .Values.gdscan.autoUpdate.networkPolicy.k8sApiPort }}
         - port: 443
+        - port: 53 # DNS
 {{- end }}
 {{- end}}
