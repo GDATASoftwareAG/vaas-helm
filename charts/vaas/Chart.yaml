@@ -12,6 +12,6 @@ dependencies:
     condition: redis.enabled
     repository: oci://registry-1.docker.io/bitnamicharts
   - name: mini-identity-provider
-    version: 0.4.0
+    version: 0.5.0
     condition: mini-identity-provider.enabled
     repository: oci://ghcr.io/gdatasoftwareag
