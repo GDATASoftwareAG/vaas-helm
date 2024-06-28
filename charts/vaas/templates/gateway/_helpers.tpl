@@ -24,14 +24,22 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{- define "gateway.imagePullSecrets" -}}
-{{- if or (gt (len .Values.global.imagePullSecrets) 0) ((.Values.global.secret).dockerconfigjson) -}}
+{{- if or (gt (len .Values.global.imagePullSecrets) 0) (.Values.imagePullSecret) (((.Values.global).secret).imagePullSecret) (((.Values.global).secret).dockerconfigjson) }}
 imagePullSecrets:
   {{- range .Values.global.imagePullSecrets }}
   - name: {{ . }}
-  {{- end -}}
-  {{- if (.Values.global.secret).dockerconfigjson }}
-  - name: registry
-  {{- end -}}
+  {{- end }}
+  {{- if .Values.imagePullSecret }}
+  - name: {{ include "gateway.fullname" . }}-image-pull-secret
+  {{- end }}
+  {{- if ((.Values.global).secret).imagePullSecret }}
+  - name: {{ include "gateway.fullname" . }}-global-image-pull-secret
+  {{- end }}
+  {{- if ((.Values.global).secret).dockerconfigjson }}
+  - name: {{ include "gateway.fullname" . }}-global-dockerconfigjson
+  {{- end }}
+{{- else -}}
+{{- fail "You have to set at least one imagePullSecret" }}
 {{- end -}}
 {{ end -}}
 
