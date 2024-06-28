@@ -1,6 +1,11 @@
 global:
-  imagePullSecrets: []
+  imagePullSecrets:
+    - imagePullSecrets
+  secret:
+    dockerconfigjson: "e30K"
+    imagePullSecret: "e30K"
 
+imagePullSecret: "e30K"
 mini-identity-provider:
   issuer: "http://vaas/auth"
   enabled: true
@@ -147,6 +152,7 @@ gateway:
   gdscanUrl: "http://gdscan:8080/scan/body"
 
 gdscan:
+  imagePullSecrets: []
   replicaCount: 1
   deploymentStrategy: "RollingUpdate"
   client:

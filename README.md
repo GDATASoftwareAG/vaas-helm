@@ -9,14 +9,21 @@ Vaas helm is a chart for deploying Verdict-as-a-Service on-premise.
 
 * Create a minimal values.yaml file. 
 
-  To access the VaaS docker containers, the imagePullSecret has to be set in the `global.secret.dockerconfigjson` variable.
+To access the VaaS docker containers, you have to provide at least one imagePullSecret.
+
+To set the image pull secret, you need to create a custom values.yaml file that includes the necessary configurations for image pull secrets. Here's how you can do it:
+
+  1. **Direct Image Pull Secrets**: If you have a direct image pull secret (a base64 encoded JSON containing Docker auth config), you can set it directly in the values.yaml file under either of these keys
+    * `global.secret.dockerconfigjson`
+    * `global.secret.imagePullSecret`
+    * `global.imagePullSecret`
 
 ```yaml
 global:
-  imagePullSecrets:
-    - registry
   secret:
     dockerconfigjson: "BASE64_ENCODED_JSON_CONTAINING_DOCKER_AUTH_CONFIG"
+    imagePullSecret: "BASE64_ENCODED_JSON_CONTAINING_DOCKER_AUTH_CONFIG"
+imagePullSecret: "BASE64_ENCODED_JSON_CONTAINING_DOCKER_AUTH_CONFIG"
 ```
 
 You can generate this value with a bash command like this
@@ -31,6 +38,15 @@ echo '{
 ```
 
 You need to substitute the username and password with the credentials we provided to you.
+
+  2. **Global Image Pull Secrets**: You can specify a list of predeployed image pull secrets under the global.imagePullSecrets key. These are the names of Kubernetes secrets that contain the registry credentials.
+
+```yaml
+global:
+  imagePullSecrets:
+    - my-image-pull-secret
+```
+
 
 * Install Verdict-as-a-Service:
 
