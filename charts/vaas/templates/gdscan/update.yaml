@@ -95,7 +95,7 @@ spec:
                   mountPath: /home/appuser/.docker
                 {{- range (include "gdscan.imagePullSecrets" . | fromYaml ).imagePullSecrets }}
                 - name: {{ .name }}
-                  mountPath: "/home/appuser/.image_pull_secrets/"
+                  mountPath: "/home/appuser/.image_pull_secrets/{{ .name}}.json"
                 {{- end }}
 {{- if .Values.gdscan.autoUpdate.networkPolicy.enabled }}
 ---
