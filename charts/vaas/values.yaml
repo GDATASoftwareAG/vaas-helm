@@ -28,7 +28,7 @@ mini-identity-provider:
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider
     pullPolicy: Always
-    tag: "0.1.21"
+    tag: "0.1.25"
 
   service:
     type: ClusterIP
