@@ -59,6 +59,9 @@ cloud:
 #   tracesSampleRate: ""
 
 gateway:
+  uploadToken:
+    existingSecret: ""
+    key: ""
   ingress:
     enabled: true
     className: ""

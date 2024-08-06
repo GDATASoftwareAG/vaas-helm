@@ -47,7 +47,10 @@ spec:
             - name: Upload__Endpoint
               value: {{.Values.gateway.uploadUrl}}
             - name: JwtSettings__Secret
-              value: {{ randAlphaNum 64 }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.gateway.uploadToken.existingSecret | default "upload-token-key" }}
+                  key: key
             - name: GDScanConfiguration__Url
               value: "http://gdscan:8080/scan/body"
             - name: RedisConfiguration__Configuration

@@ -1,0 +1,16 @@
+{{- if not .Values.gateway.uploadToken.existingSecret }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: upload-token-key
+  namespace: {{ .Release.Namespace }}
+stringData:
+  {{- if .Values.gateway.uploadToken.key }}
+  {{- if lt (len .Values.gateway.uploadToken.key) 128 }}
+  {{- fail "length of key must be greater than 128" }}
+  {{- end }}
+  key: {{ required "length of key must be greater than 128" .Values.gateway.uploadToken.key }}
+  {{- else }}
+  key: {{ randAlphaNum 64 }}
+  {{- end }}
+{{- end}}
