@@ -10,3 +10,4 @@
 .output/
 Chart.lock
 tmp/
+out/
