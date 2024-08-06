@@ -41,10 +41,12 @@ jobs:
         uses: helm/chart-testing-action@v2.6.1
 
       - name: Extract tag
+        id: extract_tag
         run: |
           version=$(grep '^version:' Chart.yaml | sed 's/"//g' | awk '{print $2}')
           echo "Chart version is $version"
           echo "CHART_VERSION=$version" >> $GITHUB_ENV
+          echo "CHART_VERSION=$version" >> $GITHUB_OUTPUT
         working-directory: charts/vaas
 
       - name: Run chart-testing (lint)
@@ -62,3 +64,16 @@ jobs:
           registry_username: ${{ secrets.REGISTRY_USERNAME }}
           registry_password: ${{ secrets.CR_TOKEN }}
           update_dependencies: "true"
+
+      - name: create zipfile
+        run: zip -r vaas-helm.zip charts/vaas/
+
+      - name: Github Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        with:
+          tag_name: ${{steps.extract_tag.outputs.CHART_VERSION}}
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            vaas-helm.zip
