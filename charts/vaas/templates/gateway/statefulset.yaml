@@ -49,7 +49,7 @@ spec:
             - name: JwtSettings__Secret
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.gateway.uploadToken.existingSecret | default "uploadTokenKey" }}
+                  name: {{ .Values.gateway.uploadToken.existingSecret | default "upload-token-key" }}
                   key: key
             - name: GDScanConfiguration__Url
               value: "http://gdscan:8080/scan/body"

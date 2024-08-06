@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: uploadTokenKey
+  name: upload-token-key
   namespace: {{ .Release.Namespace }}
 stringData:
   {{- if .Values.gateway.uploadToken.key }}
