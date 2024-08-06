@@ -333,11 +333,14 @@ specify the secrets in the values.yaml.
 | mini-identity-provider.signing.existingSecret | Use existing secret for signing details (signing.cert and signing.key will be ignored and picked up from this secret). The secret has to contain the keys tls.cert and tls.key | ""     |
 | mini-identity-provider.signing.crt            | The signing/encryption certificate in PEM format                                                                                                                               | ""     |
 | mini-identity-provider.signing.key            | The signing/encryption private key in PEM format                                                                                                                               | ""     |
+| gateway.uploadToken.existingSecret            | Use existing secret for signing the upload token                                                                                                                               | ""     |
+| gateway.uploadToken.key                       | The upload token signing key                                                                                                                                                   | ""     |
 
 Provide your own secret:
 
 * mini-identity-provider.auth.existingSecret   
 * mini-identity-provider.signing.existingSecret
+* gateway.uploadToken.existingSecret
 
 Specify secret in the values.yaml:
 
@@ -345,12 +348,19 @@ Specify secret in the values.yaml:
 * mini-identity-provider.auth.id               
 * mini-identity-provider.signing.crt           
 * mini-identity-provider.signing.key
+* gateway.uploadToken.key
 
 You can generate the certificate and private key with
 
 ```bash
 openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
 openssl req -new -x509 -key private_key.pem -out certificate.pem -days 3650 -subj "/CN=Mini Identity Provider Server Signing Certificate"
+```
+
+You can generate the upload token signing key with
+
+```bash
+cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 256 | head -n 1
 ```
 
 <!-- end::ProductionEnviroment[] -->
