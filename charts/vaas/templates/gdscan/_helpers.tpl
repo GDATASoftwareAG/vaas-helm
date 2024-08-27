@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "gdscan.name" -}}
-{{- default .Chart.Name .Values.gdscan.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default "gdscan" .Values.gdscan.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*

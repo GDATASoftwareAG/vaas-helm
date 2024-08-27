@@ -13,5 +13,4 @@ VALUES_FILE=$1
 helm dep up charts/vaas
 helm lint charts/vaas -f $VALUES_FILE
 helm template charts/vaas -f $VALUES_FILE
-helm uninstall vaas -n vaas
-helm install vaas charts/vaas -f $VALUES_FILE -n vaas --create-namespace
+helm upgrade --install vaas charts/vaas -f $VALUES_FILE -n vaas --create-namespace

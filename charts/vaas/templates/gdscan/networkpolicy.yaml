@@ -13,6 +13,9 @@ spec:
   - Ingress
   ingress:
     - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: gateway
       ports:
-        - port: 8080 # Http
+        - port: 8080 # Upload
 {{- end }}
