@@ -14,16 +14,38 @@ spec:
   - Egress
   ingress:
     - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: gateway
       ports:
-        - port: 8080 # Http
+        - port: 8080 # Upload
         - port: 9090 # Websocket
   egress:
     - to:
       ports:
         - port: 443 # VerdictRequestForUrl
         - port: 80  # VerdictRequestForUrl
-        - port: 6379 # Redis
-        - port: 8080 # GdScan
-        - port: 53 # DNS
-          protocol: UDP
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: redis
+      ports:
+        - port: 6379
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: gdscan
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: mini-identity-provider              
+      ports:
+        - port: 8080
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP     
 {{- end }}

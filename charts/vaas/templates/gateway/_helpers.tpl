@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "gateway.name" -}}
-{{- default .Chart.Name .Values.gateway.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default "gateway" .Values.gateway.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
