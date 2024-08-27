@@ -14,9 +14,6 @@ spec:
   - Egress
   ingress:
     - from:
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/name: gateway
       ports:
         - port: 8080 # Upload
         - port: 9090 # Websocket

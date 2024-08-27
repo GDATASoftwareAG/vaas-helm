@@ -15,7 +15,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: gdscan
+              app.kubernetes.io/name: gateway
       ports:
         - port: 8080 # Upload
 {{- end }}
