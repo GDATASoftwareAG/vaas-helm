@@ -34,7 +34,10 @@ spec:
               app.kubernetes.io/name: gdscan
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: mini-identity-provider              
+              app.kubernetes.io/name: mini-identity-provider
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: gateway              
       ports:
         - port: 8080
     - to:
