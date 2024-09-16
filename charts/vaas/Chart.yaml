@@ -1,6 +1,6 @@
 apiVersion: v2
 name: vaas
-version: 2.1.3
+version: 2.1.4
 description: Deployment of a Verdict-as-a-Service on-premise instance
 maintainers:
   - name: G DATA CyberDefense AG
@@ -8,7 +8,7 @@ maintainers:
 type: application
 dependencies:
   - name: redis
-    version: 20.0.5
+    version: 20.1.3
     condition: redis.enabled
     repository: oci://registry-1.docker.io/bitnamicharts
   - name: mini-identity-provider
