@@ -71,6 +71,9 @@ spec:
                 - key: .dockerconfigjson
                   path: {{ .name }}.json
             {{- end }}
+          {{- if .Values.gdscan.autoUpdate.podSecurityContext.enabled }}
+          securityContext: {{- .Values.gdscan.autoUpdate.podSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
           containers:
             - name: updater
               image: "{{ .Values.gdscan.autoUpdate.image.registry }}/{{ .Values.gdscan.autoUpdate.image.repository }}:{{ .Values.gdscan.autoUpdate.image.tag }}"

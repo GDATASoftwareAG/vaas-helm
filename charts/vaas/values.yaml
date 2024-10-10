@@ -43,6 +43,18 @@ mini-identity-provider:
   tolerations: []
   affinity: {}
 
+  podSecurityContext:
+    enabled: false
+
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    runAsNonRoot: true
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault  
+
 cloud:
   hashLookup:
     enabled: true
@@ -123,6 +135,9 @@ gateway:
       cpu: 0.5
       memory: 256Mi
 
+  podSecurityContext:
+    enabled: false
+
   containerSecurityContext:
     enabled: true
     readOnlyRootFilesystem: true
@@ -171,6 +186,9 @@ gdscan:
       repository: ghcr.io/gdatasoftwareag/vaas/scanner
       pullPolicy: Always
       tag: "1"
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1654
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true
@@ -236,6 +254,8 @@ gdscan:
       registry: ghcr.io/gdatasoftwareag
       repository: vaas/scanner-updater
       tag: "0.4.1"
+    podSecurityContext:
+      enabled: false
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true

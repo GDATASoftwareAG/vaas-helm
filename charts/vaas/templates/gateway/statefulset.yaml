@@ -26,6 +26,9 @@ spec:
       volumes:
         - name: gateway-tmp
           emptyDir: {}
+      {{- if .Values.gateway.podSecurityContext.enabled }}
+      securityContext: {{- .Values.gateway.podSecurityContext | toYaml | nindent 10 }}
+      {{- end }}
       containers:
         - name: {{ include "gateway.name" . }}
           {{- if .Values.gateway.containerSecurityContext.enabled }}        
