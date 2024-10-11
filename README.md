@@ -224,7 +224,8 @@ In addition, Sentry will always behave as follows:
 | gateway.resources.limits.memory           | Maximum memory usage                                                                                  | 512Mi                          |
 | gateway.resources.requests.cpu            | Requested CPU performance                                                                             | 0.5                            |
 | gateway.resources.requests.memory         | Requested memory usage                                                                                | 256Mi                          |
-| gateway.containerSecurityContext.enabled  | Enable/Disable container security context                                                             | false                          |
+| gateway.containerSecurityContext.enabled  | Enable/Disable container security context                                                             | true                           |
+| gateway.podSecurityContext.enabled        | Enable/Disable pod security context                                                                   | true                           |
 | gateway.uploadUrl                         | URL for the upload service                                                                            | "http://localhost:8080/upload" |
 | gateway.podAnnotations                    | Annotations for pods                                                                                  | {}                             |
 | gateway.nodeSelector                      | Node labels for pod assignment                                                                        | {}                             |
