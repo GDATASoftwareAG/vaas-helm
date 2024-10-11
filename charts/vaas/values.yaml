@@ -53,7 +53,7 @@ mini-identity-provider:
     capabilities:
       drop: ["ALL"]
     seccompProfile:
-      type: RuntimeDefault  
+      type: RuntimeDefault
 
 cloud:
   hashLookup:
