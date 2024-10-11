@@ -44,7 +44,7 @@ mini-identity-provider:
   affinity: {}
 
   podSecurityContext:
-    enabled: false
+    fsGroup: 1654
 
   containerSecurityContext:
     readOnlyRootFilesystem: true
@@ -136,7 +136,8 @@ gateway:
       memory: 256Mi
 
   podSecurityContext:
-    enabled: false
+    enabled: true
+    fsGroup: 1654
 
   containerSecurityContext:
     enabled: true
@@ -255,7 +256,8 @@ gdscan:
       repository: vaas/scanner-updater
       tag: "0.4.1"
     podSecurityContext:
-      enabled: false
+      enabled: true
+      fsGroup: 1654
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true
@@ -288,6 +290,9 @@ redis:
         memory: 64Mi
     persistence:
       enabled: false
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1654
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true

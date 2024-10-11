@@ -72,7 +72,7 @@ spec:
                   path: {{ .name }}.json
             {{- end }}
           {{- if .Values.gdscan.autoUpdate.podSecurityContext.enabled }}
-          securityContext: {{- .Values.gdscan.autoUpdate.podSecurityContext | toYaml | nindent 12 }}
+          securityContext: {{- omit .Values.gdscan.autoUpdate.podSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           containers:
             - name: updater
