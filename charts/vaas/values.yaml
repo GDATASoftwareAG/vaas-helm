@@ -38,6 +38,14 @@ mini-identity-provider:
   networkPolicy:
     enabled: true
 
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
   podAnnotations: {}
   nodeSelector: {}
   tolerations: []
@@ -273,6 +281,13 @@ gdscan:
     networkPolicy:
       enabled: true
       k8sApiPort: 6443
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
 
 redis:
   enabled: true

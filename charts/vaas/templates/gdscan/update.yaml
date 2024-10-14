@@ -100,6 +100,8 @@ spec:
                 - name: {{ .name }}
                   mountPath: "/home/appuser/.image_pull_secrets/{{ .name}}.json"
                 {{- end }}
+              resources:
+                {{- toYaml .Values.gdscan.autoUpdate.resources | nindent 16 }}                
 {{- if .Values.gdscan.autoUpdate.networkPolicy.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
