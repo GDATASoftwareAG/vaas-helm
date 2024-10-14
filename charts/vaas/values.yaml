@@ -287,7 +287,7 @@ gdscan:
         memory: 128Mi
       requests:
         cpu: 100m
-        memory: 64Mi      
+        memory: 64Mi
 
 redis:
   enabled: true
