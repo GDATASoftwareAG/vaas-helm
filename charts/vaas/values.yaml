@@ -275,6 +275,7 @@ gdscan:
         drop: ["ALL"]
       seccompProfile:
         type: RuntimeDefault
+    podAnnotations: {}
     enabled: true
     # every hour
     schedule: "0 * * * *"

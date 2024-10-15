@@ -48,6 +48,10 @@ spec:
       activeDeadlineSeconds: 600
       template:
         metadata:
+          {{- with .Values.gdscan.autoUpdate.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}        
           labels:
             app.kubernetes.io/name: update
             app.kubernetes.io/instance: "{{ .Release.Name }}"
