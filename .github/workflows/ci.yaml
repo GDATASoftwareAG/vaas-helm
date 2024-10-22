@@ -57,7 +57,6 @@ jobs:
         with:
           minikube version: v1.34.0
           kubernetes version: v1.30.0
-          start args: --addons ingress
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
@@ -68,14 +67,6 @@ jobs:
         uses: azure/setup-helm@v4
         with:
           version: v3.13.3
-
-      - name: Install NGINX Ingress Controller
-        run: |
-          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
-          kubectl wait --namespace ingress-nginx \
-            --for=condition=ready pod \
-            --selector=app.kubernetes.io/component=controller \
-            --timeout=300s
 
       - name: Deploy Helm Chart
         run: |
