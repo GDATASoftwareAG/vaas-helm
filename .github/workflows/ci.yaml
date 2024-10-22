@@ -71,7 +71,6 @@ jobs:
 
       - name: Deploy Helm Chart
         run: |
-          echo "$(minikube ip) vaas" >> /etc/hosts
           cat <<EOF > values-local.yaml
           global:
             imagePullSecrets:
