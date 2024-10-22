@@ -84,7 +84,8 @@ jobs:
             allowlistLookup:
               enabled: false
           EOF
-          helm.sh values-local.yaml
+          helm dep up charts/vaas
+          helm upgrade --install vaas charts/vaas -f values-local.yaml -n vaas --create-namespace --debug
 
       - name: Verify Pods
         run: |
