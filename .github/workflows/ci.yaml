@@ -52,6 +52,50 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --validate-maintainers=false --charts charts/vaas
 
+      - name: Install Minikube
+        uses: manusa/actions-setup-minikube@v2.13.0
+        with:
+          minikube version: 'latest'
+          kubernetes version: 'latest'
+          start args: --addons ingress
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.13.3
+
+      - name: Deploy Helm Chart
+        run: |
+          cat <<EOF > values-local.yaml
+          global:
+            imagePullSecrets:
+              - registry
+            secret:
+              dockerconfigjson: "${{ secrets.DOCKER_CONFIG_JSON }}"
+
+          cloud:
+            hashLookup:
+              enabled: false
+            allowlistLookup:
+              enabled: false
+          EOF
+          helm.sh values-local.yaml
+
+      - name: Verify Pods
+        run: |
+          kubectl get pods
+          kubectl wait --for=condition=ready pod -n vaas --timeout=300s --all
+
+      - name: Verify Services
+        run: |
+          kubectl get svc
+          kubectl wait --for=condition=ready svc -n vaas --timeout=300s --all
+
       - name: Push chart
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: appany/helm-oci-chart-releaser@v0.4.2
