@@ -71,6 +71,7 @@ jobs:
 
       - name: Deploy Helm Chart
         run: |
+          echo "$(minikube ip) vaas" >> /etc/hosts
           cat <<EOF > values-local.yaml
           global:
             imagePullSecrets:
@@ -84,6 +85,7 @@ jobs:
             allowlistLookup:
               enabled: false
           EOF
+          cat values-local.yaml
           helm dep up charts/vaas
           helm upgrade --install vaas charts/vaas -f values-local.yaml -n vaas --create-namespace --debug
 
