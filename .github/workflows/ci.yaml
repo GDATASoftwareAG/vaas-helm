@@ -69,6 +69,14 @@ jobs:
         with:
           version: v3.13.3
 
+      - name: Install NGINX Ingress Controller
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+          kubectl wait --namespace ingress-nginx \
+            --for=condition=ready pod \
+            --selector=app.kubernetes.io/component=controller \
+            --timeout=300s
+
       - name: Deploy Helm Chart
         run: |
           cat <<EOF > values-local.yaml
@@ -84,7 +92,6 @@ jobs:
             allowlistLookup:
               enabled: false
           EOF
-          cat values-local.yaml
           helm dep up charts/vaas
           helm upgrade --install vaas charts/vaas -f values-local.yaml -n vaas --create-namespace --debug
 
