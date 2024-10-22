@@ -72,8 +72,6 @@ jobs:
         run: |
           cat <<EOF > values-local.yaml
           global:
-            imagePullSecrets:
-              - registry
             secret:
               dockerconfigjson: "${{ secrets.DOCKER_CONFIG_JSON }}"
 
