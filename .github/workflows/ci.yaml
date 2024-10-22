@@ -88,13 +88,8 @@ jobs:
 
       - name: Verify Pods
         run: |
-          kubectl get pods -n vaas
-          kubectl wait --for=condition=ready pod -n vaas --timeout=300s --all
-
-      - name: Verify Services
-        run: |
-          kubectl get svc -n vaas
-          kubectl wait --for=condition=ready svc -n vaas --timeout=300s --all
+          minikube kubectl -- get pods --namespace vaas
+          minikube kubectl -- wait --for=condition=ready pods --namespace vaas --timeout=300s --all
 
       - name: Push chart
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
