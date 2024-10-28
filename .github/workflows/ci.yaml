@@ -67,7 +67,7 @@ jobs:
           minikube version: v1.34.0
           kubernetes version: v1.30.0
           driver: docker
-          start args: --cpus 4 --memory 8192
+          start args: --cpus 4 --memory 8192 --cni=cilium
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
