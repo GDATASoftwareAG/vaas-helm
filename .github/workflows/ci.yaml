@@ -87,15 +87,6 @@ jobs:
             --selector=app.kubernetes.io/component=controller \
             --timeout=120s
 
-      - name: Generate and apply self-signed certificate for ingress-nginx
-        run: |
-          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-            -keyout tls.key -out tls.crt -subj "/CN=ingress-nginx-controller-admission.ingress-nginx.svc"
-          kubectl create secret tls ingress-nginx-admission -n ingress-nginx \
-            --key tls.key --cert tls.crt
-          kubectl patch validatingwebhookconfiguration ingress-nginx-admission \
-            --type='json' -p='[{"op": "replace", "path": "/webhooks/0/clientConfig/caBundle", "value": "'$(base64 -w 0 tls.crt)'"}]'
-
       - name: Deploy Helm Chart
         run: |
           cat <<EOF > values-local.yaml
