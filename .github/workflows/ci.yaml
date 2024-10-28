@@ -99,6 +99,11 @@ jobs:
               enabled: false
             allowlistLookup:
               enabled: false
+
+          gdscan:
+            autoUpdate:
+              networkPolicy:
+                k8sApiPort: 6443
           EOF
           helm dep up vaas-helm/charts/vaas
           helm upgrade --install vaas vaas-helm/charts/vaas -f values-local.yaml -n vaas --create-namespace --debug
