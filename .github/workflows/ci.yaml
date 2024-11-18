@@ -17,15 +17,24 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Vaas Helm
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          path: vaas-helm
+      
+      - name: Checkout Vaas Java SDK
+        uses: actions/checkout@v4
+        with:
+          repository: GDATASoftwareAG/vaas
+          path: vaas-sdks
 
       - name: Configure Git
         run: |
+          cd vaas-helm
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          cd ..
 
       - name: Install Helm
         uses: azure/setup-helm@v4
@@ -47,10 +56,82 @@ jobs:
           echo "Chart version is $version"
           echo "CHART_VERSION=$version" >> $GITHUB_ENV
           echo "CHART_VERSION=$version" >> $GITHUB_OUTPUT
-        working-directory: charts/vaas
+        working-directory: vaas-helm/charts/vaas
 
       - name: Run chart-testing (lint)
-        run: ct lint --validate-maintainers=false --charts charts/vaas
+        run: ct lint --validate-maintainers=false --charts vaas-helm/charts/vaas
+
+      - name: Install Minikube
+        uses: manusa/actions-setup-minikube@v2.13.0
+        with:
+          minikube version: v1.34.0
+          kubernetes version: v1.30.0
+          driver: docker
+          start args: --cpus 4 --memory 8192
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.13.3
+
+      - name: Enable ingress
+        run: |
+          minikube addons enable ingress
+          minikube kubectl -- wait --namespace ingress-nginx \
+            --for=condition=ready pod \
+            --selector=app.kubernetes.io/component=controller \
+            --timeout=120s
+
+      - name: Deploy Helm Chart
+        run: |
+          cat <<EOF > values-local.yaml
+          global:
+            secret:
+              dockerconfigjson: "${{ secrets.DOCKER_CONFIG_JSON }}"
+
+          cloud:
+            hashLookup:
+              enabled: false
+            allowlistLookup:
+              enabled: false
+
+          gdscan:
+            autoUpdate:
+              networkPolicy:
+                k8sApiPort: 6443
+          EOF
+          helm dep up vaas-helm/charts/vaas
+          helm upgrade --install vaas vaas-helm/charts/vaas -f values-local.yaml -n vaas --create-namespace --debug
+
+      - name: Verify Pods
+        run: |
+          sleep 5
+          minikube kubectl -- get pods --namespace vaas || true
+          minikube kubectl -- wait --for=condition=ready pods --namespace vaas --timeout=300s --all
+
+      - name: Run Java SDK Example
+        run: |
+          sudo echo "$(minikube ip) vaas" | sudo tee -a /etc/hosts
+          sudo apt-get update
+          sudo apt-get install -y openjdk-21-jdk
+          export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+          export PATH=$JAVA_HOME/bin:$PATH
+          cd ./vaas-sdks/java/examples/VaasExample
+          export SCAN_PATH=$(pwd)/build.gradle
+          export CLIENT_ID=vaas
+          export CLIENT_SECRET=$(minikube kubectl -- get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d)
+          export VAAS_URL=ws://vaas/ws
+          export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
+          gradle fileScan
+          minikube kubectl -- logs -n vaas $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") | grep "Got verdict from store: Unknown"
+          gradle fileScan
+          minikube kubectl -- logs -n vaas $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") | grep "Got verdict from store: Clean"
+          cd -
 
       - name: Push chart
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -59,14 +140,14 @@ jobs:
           name: vaas
           repository: gdatasoftwareag/charts
           tag: $CHART_VERSION
-          path: charts/vaas
+          path: vaas-helm/charts/vaas
           registry: ghcr.io
           registry_username: ${{ secrets.REGISTRY_USERNAME }}
           registry_password: ${{ secrets.CR_TOKEN }}
           update_dependencies: "true"
 
       - name: create zipfile
-        run: zip -r vaas-helm.zip charts/vaas/
+        run: zip -r vaas-helm.zip vaas-helm/charts/vaas/
 
       - name: Github Release
         uses: softprops/action-gh-release@v2
