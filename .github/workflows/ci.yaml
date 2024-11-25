@@ -70,7 +70,7 @@ jobs:
           start args: --cpus 4 --memory 8192
 
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v4
         with:
           version: 'latest'
 
