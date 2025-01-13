@@ -48,4 +48,25 @@ spec:
       ports:
         - port: 53
           protocol: UDP     
+    {{- if or .Values.gateway.networkPolicy.ingressNSMatchLabels .Values.gateway.networkPolicy.ingressNSPodMatchLabels }}
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              {{- if .Values.gateway.networkPolicy.ingressNSMatchLabels }}
+                {{- range $key, $value := .Values.gateway.networkPolicy.ingressNSMatchLabels }}
+                {{ $key | quote }}: {{ $value | quote }}
+                {{- end }}
+              {{ else }}
+                {}
+              {{- end }}
+          {{- if .Values.gateway.networkPolicy.ingressNSPodMatchLabels }}
+          podSelector:
+            matchLabels:
+              {{- range $key, $value := .Values.gateway.networkPolicy.ingressNSPodMatchLabels }}
+              {{ $key | quote }}: {{ $value | quote }}
+              {{- end }}
+          {{- end }}
+      ports:
+        - port: 8080 # Upload
+    {{- end }}
 {{- end }}

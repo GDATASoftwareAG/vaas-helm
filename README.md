@@ -215,6 +215,8 @@ In addition, Sentry will always behave as follows:
 | gateway.nameOverride                      | Overrides the application name                                                                        | ""                             |
 | gateway.fullnameOverride                  | Overrides the full name                                                                               | ""                             |
 | gateway.networkPolicy.enabled             | Enable/Disable the default Network Policy                                                             | false                          |
+| gateway.networkPolicy.ingressNSMatchLabels    | Labels to match to allow traffic from other namespaces                                                | {}                             |
+| gateway.networkPolicy.ingressNSPodMatchLabels | Pod labels to match to allow traffic from other namespaces                                            | {}                             |
 | gateway.service.type                      | Type of Kubernetes service                                                                            | ""                             |
 | gateway.service.http.port                 | HTTP port for the service                                                                             | 8080                           |
 | gateway.service.ws.port                   | WebSocket port for the service                                                                        | 9090                           |
@@ -231,6 +233,9 @@ In addition, Sentry will always behave as follows:
 | gateway.nodeSelector                      | Node labels for pod assignment                                                                        | {}                             |
 | gateway.affinity                          | Affinity settings for pods                                                                            | {}                             |
 | gateway.terminationGracePeriodSeconds     | Max time in seconds for scans to complete                                                             | 30                             |
+| gdscan.networkPolicy.enabled                  | Enable/Disable the default Network Policy                                                             | false                          |
+| gdscan.networkPolicy.ingressNSMatchLabels     | Labels to match to allow traffic from other namespaces                                                | {}                             |
+| gdscan.networkPolicy.ingressNSPodMatchLabels  | Pod labels to match to allow traffic from other namespaces                                            | {}                             |
 | gdscan.nodeSelector                       | gdscan node labels for pod assignment                                                                 | {}                             |
 | gdscan.replicaCount                       | Number of replicas for the gdscan deployment                                                          | 1                              |
 | gdscan.terminationGracePeriodSeconds      | Max time in seconds for scans to complete. Set to same value as gateway.terminationGracePeriodSeconds | 30                             |

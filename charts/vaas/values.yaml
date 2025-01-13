@@ -111,6 +111,10 @@ gateway:
 
   networkPolicy:
     enabled: true
+    # ingressNSMatchLabels:
+    #   kubernetes.io/metadata.name: prometheus
+    # ingressNSPodMatchLabels:
+    #   app.kubernetes.io/name: prometheus
 
   service:
     type: ClusterIP
@@ -214,6 +218,10 @@ gdscan:
 
   networkPolicy:
     enabled: true
+    # ingressNSMatchLabels:
+    #   kubernetes.io/metadata.name: prometheus
+    # ingressNSPodMatchLabels:
+    #   app.kubernetes.io/name: prometheus
 
   podAnnotations: {}
 

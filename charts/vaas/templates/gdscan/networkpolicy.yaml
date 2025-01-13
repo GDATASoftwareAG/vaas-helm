@@ -16,6 +16,24 @@ spec:
         - podSelector:
             matchLabels:
               app.kubernetes.io/name: gateway
+        {{- if or .Values.gdscan.networkPolicy.ingressNSMatchLabels .Values.gdscan.networkPolicy.ingressNSPodMatchLabels }}
+        - namespaceSelector:
+            matchLabels:
+              {{- if .Values.gdscan.networkPolicy.ingressNSMatchLabels }}
+                {{- range $key, $value := .Values.gdscan.networkPolicy.ingressNSMatchLabels }}
+                {{ $key | quote }}: {{ $value | quote }}
+                {{- end }}
+              {{ else }}
+                {}
+              {{- end }}
+          {{- if .Values.gdscan.networkPolicy.ingressNSPodMatchLabels }}
+          podSelector:
+            matchLabels:
+              {{- range $key, $value := .Values.gdscan.networkPolicy.ingressNSPodMatchLabels }}
+              {{ $key | quote }}: {{ $value | quote }}
+              {{- end }}
+          {{- end }}
+        {{- end }}
       ports:
         - port: 8080 # Upload
 {{- end }}
