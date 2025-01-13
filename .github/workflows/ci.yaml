@@ -114,24 +114,23 @@ jobs:
           minikube kubectl -- get pods --namespace vaas || true
           minikube kubectl -- wait --for=condition=ready pods --namespace vaas --timeout=300s --all
 
-      # - name: Run Java SDK Example
-      #   run: |
-      #     sudo echo "$(minikube ip) vaas" | sudo tee -a /etc/hosts
-      #     sudo apt-get update
-      #     sudo apt-get install -y openjdk-21-jdk
-      #     export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-      #     export PATH=$JAVA_HOME/bin:$PATH
-      #     cd ./vaas-sdks/java/examples/VaasExample
-      #     export SCAN_PATH=$(pwd)/build.gradle
-      #     export CLIENT_ID=vaas
-      #     export CLIENT_SECRET=$(minikube kubectl -- get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d)
-      #     export VAAS_URL=ws://vaas/ws
-      #     export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
-      #     gradle fileScan
-      #     minikube kubectl -- logs -n vaas $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") | grep "Got verdict from store: Unknown"
-      #     gradle fileScan
-      #     minikube kubectl -- logs -n vaas $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") | grep "Got verdict from store: Clean"
-      #     cd -
+      - name: Run Java SDK Example
+        run: |
+          sudo echo "$(minikube ip) vaas" | sudo tee -a /etc/hosts
+          sudo apt-get update
+          sudo apt-get install -y openjdk-21-jdk
+          export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+          export PATH=$JAVA_HOME/bin:$PATH
+          cd ./vaas-sdks/java/examples/VaasExample
+          export SCAN_PATH=$(pwd)/build.gradle
+          export CLIENT_ID=vaas
+          export CLIENT_SECRET=$(minikube kubectl -- get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d)
+          export VAAS_URL=ws://vaas/ws
+          export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
+          gradle fileScan
+          gradle fileScan
+          minikube kubectl -- logs -n vaas $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") | grep "Got verdict from store: Clean"
+          cd -
 
       - name: Push chart
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
