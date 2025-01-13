@@ -121,7 +121,7 @@ gateway:
 
   metrics:
     enabled: false
-    port: 8080
+    port: http
     path: /metrics
 
   autoscaling:
@@ -224,7 +224,7 @@ gdscan:
   metrics:
     servicemonitor:
       enabled: false
-      port: 8080
+      port: http
       path: /metrics
 
   ingress:
