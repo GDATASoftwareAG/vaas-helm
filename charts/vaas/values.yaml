@@ -1,4 +1,5 @@
 global:
+  imagePullSecret: "e30K"
   imagePullSecrets: []
   secret:
     dockerconfigjson: "e30K"
