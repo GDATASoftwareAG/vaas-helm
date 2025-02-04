@@ -128,8 +128,7 @@ jobs:
           export VAAS_URL=http://vaas
           export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
           gradle fileScan
-          gradle fileScan
-          minikube kubectl -- logs -n vaas $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") | grep "Got verdict from store: Clean"
+          minikube kubectl -- logs -n vaas $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") | grep '"Verdict":"Clean","Url":null,"Source":"Cache"'
           cd -
 
       - name: Push chart
