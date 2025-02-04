@@ -204,8 +204,10 @@ In addition, Sentry will always behave as follows:
 
 | Parameter                                 | Description                                                                                           | Value                          |
 | ----------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------ |
-| global.imagePullSecrets                   | List of image pull secrets                                                                            | - name: registry               |
-| global.secret.dockerconfigjson            | Docker authentication configuration                                                                   | ""                             |
+| imagePullSecret                           | Image pull secret                                                                                     | "e30K"                         |
+| global.imagePullSecret                    | Global image pull secret                                                                              | "e30K"                         |
+| global.imagePullSecrets                   | List of image pull secrets                                                                            | []                             |
+| global.secret.dockerconfigjson            | Docker authentication configuration                                                                   | "e30K"                         |
 | cloud.hashLookup.enabled                  | Enable/Disable the cloud hash lookup                                                                  | true                           |
 | cloud.allowlistLookup.enabled             | Enable/Disable the cloud allowlist lookup                                                             | true                           |
 | gateway.ingress.enabled                   | Enable/Disable the Ingress resource                                                                   | false                          |
