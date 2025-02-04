@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
           path: vaas-helm
-      
+
       - name: Checkout Vaas Java SDK
         uses: actions/checkout@v4
         with:
@@ -72,7 +72,7 @@ jobs:
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
         with:
-          version: 'latest'
+          version: "latest"
 
       - name: Install Helm
         uses: azure/setup-helm@v4
@@ -125,7 +125,7 @@ jobs:
           export SCAN_PATH=$(pwd)/build.gradle
           export CLIENT_ID=vaas
           export CLIENT_SECRET=$(minikube kubectl -- get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d)
-          export VAAS_URL=ws://vaas/ws
+          export VAAS_URL=http://vaas/
           export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
           gradle fileScan
           gradle fileScan
