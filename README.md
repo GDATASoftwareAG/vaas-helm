@@ -17,9 +17,11 @@ To set the image pull secret, you need to create a custom values.yaml file that 
     * `global.secret.dockerconfigjson`
     * `global.secret.imagePullSecret`
     * `global.imagePullSecret`
+    * `imagePullSecret`
 
 ```yaml
 global:
+  imagePullSecret: "BASE64_ENCODED_JSON_CONTAINING_DOCKER_AUTH_CONFIG"
   secret:
     dockerconfigjson: "BASE64_ENCODED_JSON_CONTAINING_DOCKER_AUTH_CONFIG"
     imagePullSecret: "BASE64_ENCODED_JSON_CONTAINING_DOCKER_AUTH_CONFIG"
