@@ -160,6 +160,8 @@ gateway:
       drop: ["ALL"]
     seccompProfile:
       type: RuntimeDefault
+    runAsUser: 1001
+    runAsGroup: 1001
   image:
     repository: ghcr.io/gdatasoftwareag/vaas/gateway
     pullPolicy: Always
@@ -211,6 +213,8 @@ gdscan:
         drop: ["ALL"]
       seccompProfile:
         type: RuntimeDefault
+      runAsUser: 1001
+      runAsGroup: 1001
   terminationGracePeriodSeconds: 30
 
   nameOverride: ""
@@ -283,6 +287,8 @@ gdscan:
         drop: ["ALL"]
       seccompProfile:
         type: RuntimeDefault
+      runAsUser: 1000
+      runAsGroup: 1000
     podAnnotations: {}
     enabled: true
     # every hour
@@ -316,7 +322,8 @@ redis:
       enabled: false
     podSecurityContext:
       enabled: true
-      fsGroup: 1654
+      fsGroupChangePolicy: "OnRootMismatch"
+      fsGroup: 1001
     containerSecurityContext:
       enabled: true
       readOnlyRootFilesystem: true
@@ -326,5 +333,7 @@ redis:
         drop: ["ALL"]
       seccompProfile:
         type: RuntimeDefault
+      runAsUser: 1001
+      runAsGroup: 1001
   networkPolicy:
     enabled: true
