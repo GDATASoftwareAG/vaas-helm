@@ -16,7 +16,7 @@ To set the image pull secret, you need to create a custom values.yaml file that 
   1. **Direct Image Pull Secrets**: If you have a direct image pull secret (a base64 encoded JSON containing Docker auth config), you can set it directly in the values.yaml file under either of these keys
     * `global.secret.dockerconfigjson`
     * `global.secret.imagePullSecret`
-    * `global.imagePullSecret`
+    * `imagePullSecret`
 
 ```yaml
 global:
@@ -107,8 +107,14 @@ minikube start --cpus="6" --memory="8g" --addons ingress
 export CLIENT_ID=vaas # default client id for self-hosted vaas
 export CLIENT_SECRET=$(kubectl get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d) # extracts the client secret from the k8s secret
 export SCAN_PATH=./build.gradle # path to the file you want to scan
-export VAAS_URL=ws://vaas/ws # URL of the VaaS instance you set earlier in your /etc/hosts
+export VAAS_URL=http://vaas # URL of the VaaS instance you set earlier in your /etc/hosts
 export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token # URL of the token endpoint you set earlier in your /etc/hosts
+```
+
+Alternatively, if you are using an SDK version that still supports websockets, you have to set another host for the VAAS_URL:
+
+```bash
+export VAAS_URL=ws://vaas/ws # URL of the VaaS instance you set earlier in your /etc/hosts
 ```
 
 * Execute FileScan example in Java SDK example folder
@@ -202,8 +208,10 @@ In addition, Sentry will always behave as follows:
 
 | Parameter                                 | Description                                                                                           | Value                          |
 | ----------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------ |
-| global.imagePullSecrets                   | List of image pull secrets                                                                            | - name: registry               |
-| global.secret.dockerconfigjson            | Docker authentication configuration                                                                   | ""                             |
+| imagePullSecret                           | Image pull secret                                                                                     | "e30K"                         |
+| global.imagePullSecrets                   | List of image pull secrets                                                                            | []                             |
+| global.secret.dockerconfigjson            | Docker authentication configuration                                                                   | "e30K"                         |
+| global.secret.imagePullSecret             | Image pull secret                                                                                     | "e30K"                         |
 | cloud.hashLookup.enabled                  | Enable/Disable the cloud hash lookup                                                                  | true                           |
 | cloud.allowlistLookup.enabled             | Enable/Disable the cloud allowlist lookup                                                             | true                           |
 | gateway.ingress.enabled                   | Enable/Disable the Ingress resource                                                                   | false                          |
@@ -292,6 +300,38 @@ gateway:
     tls: []
   uploadUrl: "http://vaas/upload"
 ```
+
+If you want to use only the HTTP API, it is sufficient to set the port to 8080 for the standard route:
+```yaml
+mini-identity-provider:
+  issuer: "http://vaas/auth"
+  ingress:
+    className: ""
+    hosts:
+    - host: vaas
+      paths:
+      - path: /auth(/|$)(.*)
+        pathType: ImplementationSpecific
+        service:
+          name: provider
+          port: 8080
+    tls: []
+
+gateway:
+  ingress:
+    className: ""
+    hosts:
+      - host: vaas
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            service:
+              name: gateway
+              port: 8080
+    tls: []
+```
+
+To check out, which of the SDKS supports the HTTP API, please check out this [table](https://github.com/GDATASoftwareAG/vaas?tab=readme-ov-file#sdks).
 
 Replace the "vaas" with your hostname in the following values:
 
