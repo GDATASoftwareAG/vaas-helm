@@ -1,7 +1,7 @@
 {{- if .Values.gateway.ingress.enabled -}}
 {{- $fullName := include "gateway.fullname" . -}}
 {{- $defaultAnnotations := dict "nginx.ingress.kubernetes.io/proxy-body-size" "2G" "nginx.ingress.kubernetes.io/proxy-request-buffering" "off" }}
-{{- $mergedAnnotations := merge $defaultAnnotations (.Values.gateway.ingress.annotations | default dict) }}
+{{- $mergedAnnotations := merge (.Values.gateway.ingress.annotations | default dict) $defaultAnnotations }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
