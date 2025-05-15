@@ -150,12 +150,13 @@ The `allowlistLookup` is a request of the hash to the G DATA Cloud, against a li
 <!-- tag::FileSize[] -->
 
 ### File size limit
-
-If you want to scan larger files, you have to adjust the deployments body size limit in `vaas.gateway.ingress.annotations`. Should look like this:
+The current file size limit is set to 2G. If you want to adjust the file size for your use case, you have to set the deployments body size limit in `vaas.gateway.ingress.annotations`:
 
 ```yaml
-nginx.ingress.kubernetes.io/proxy-body-size: <your maximum filesize>
-nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+gateway:
+  ingress:
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: <your maximum filesize>
 ```
 
 <!-- end::FileSize[] -->
