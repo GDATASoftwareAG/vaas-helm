@@ -1,8 +1,10 @@
 {{- if .Values.gateway.ingress.enabled -}}
 {{- $fullName := include "gateway.fullname" . -}}
+{{- $defaultAnnotations := dict "nginx.ingress.kubernetes.io/proxy-body-size" "4G" "nginx.ingress.kubernetes.io/proxy-request-buffering" "off" }}
+{{- $mergedAnnotations := merge $defaultAnnotations (.Values.gateway.ingress.annotations | default dict) }}
 {{- if and .Values.gateway.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.gateway.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.gateway.ingress.annotations "kubernetes.io/ingress.class" .Values.gateway.ingress.className}}
+  {{- if not (hasKey $mergedAnnotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set $mergedAnnotations "kubernetes.io/ingress.class" .Values.gateway.ingress.className }}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -17,10 +19,8 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "gateway.labels" . | nindent 4 }}
-  {{- with .Values.gateway.ingress.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- toYaml $mergedAnnotations | nindent 4 }}
 spec:
   {{- if and .Values.gateway.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.gateway.ingress.className }}
