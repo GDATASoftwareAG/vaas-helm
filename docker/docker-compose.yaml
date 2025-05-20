@@ -1,0 +1,93 @@
+x-healthcheck-web: &healthcheck-web
+  # Simpler port check
+  # test: ["CMD", "/bin/sh", "-c", "nc -z localhost 8080 || exit 1"]
+  test: [ "CMD", "/bin/sh", "-c", "exec 3<>/dev/tcp/localhost/8080; echo -e \"GET /health HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n\" >&3; grep \"200 OK\" <&3" ]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 20s
+  
+services:
+  mini-identity-provider:
+    image: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider:latest
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    healthcheck:
+      << : *healthcheck-web
+    ports:
+      - "8082:8080"
+    env_file:
+      - mini-oidc.secrets.env
+    environment:
+      Issuer: "http://mini-identity-provider:8080"
+      Clients__0__Id: "vaas"
+    networks:
+      - vaas
+    restart: on-failure
+
+  gateway:
+    image: ghcr.io/gdatasoftwareag/vaas/gateway:1.3.10
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    env_file:
+      - gateway.secrets.env
+    environment:
+      Authentication__Schemes__Bearer__Authority: "http://mini-identity-provider:8080"
+      Authentication__Schemes__Bearer__RequireHttpsMetadata: false
+      Upload__Endpoint: "http://localhost:8081"
+      GDScanConfiguration__Url: http://gdscan:8080/scan/body
+      RedisConfiguration__Configuration: redis
+      DOTNET_ENVIRONMENT: vaas
+      ASPNETCORE_ENVIRONMENT: vaas
+      MaxAnalysisDuration: "00:20:00"
+      FileCloudVerdictSource__Enable: true
+      FileAllowlistCloudVerdictSource__Enable: true
+    networks:
+      - vaas
+    depends_on:
+      - mini-identity-provider
+      - gdscan
+      - redis
+    restart: on-failure
+
+  gdscan:
+    image: ghcr.io/gdatasoftwareag/vaas/scanner:1.13.1
+    deploy: 
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+    healthcheck:
+      <<: *healthcheck-web
+    ports:
+      - "8081:8080"
+    networks:
+      - vaas
+
+  redis:
+    image: redis:latest
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    ports:
+      - "6379:6379"
+    networks:
+      - vaas
+    restart: on-failure
+  
+networks:
+  vaas:
+    driver: bridge
