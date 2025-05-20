@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mini-identity-provider:
+    image: your-mini-identity-provider-image:latest
+    ports:
+      - "8082:8080"
+    environment:
+      - ENV_VAR=example
+    networks:
+      - vaas
+    # volumes:
+    #   - ./mini-identity-provider:/mini-identity-provider
+    # command: ["your", "start", "command"]
+
+  gateway:
+    image: ghcr.io/gdatasoftwareag/vaas/gateway:1.3.10
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    environment:
+      Authentication__Schemes__Bearer__Authority: "http://mini-identity-provider:8082"
+      Authentication__Schemes__Bearer__RequireHttpsMetadata: false
+      Upload__Endpoint: "http://localhost:8081"
+      RedisConfiguration__Configuration: redis
+      DOTNET_ENVIRONMENT: vaas
+      ASPNETCORE_ENVIRONMENT: vaas
+      MaxAnalysisDuration: "00:20:00"
+      FileCloudVerdictSource__Enable: true
+      FileAllowlistCloudVerdictSource__Enable: true
+      JwtSettings__Secret: ""
+    networks:
+      - vaas
+
+  gdscan:
+    image: ghcr.io/gdatasoftwareag/vaas/scanner:1.13.1
+    ports:
+      - "8081:8080"
+    networks:
+      - vaas
+    volumes:
+      - /tmp/scan:/tmp/scan
+      - /tmp/share/run:/var/share/run  
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - vaas
+  
+networks:
+  vaas:
+    driver: bridge
