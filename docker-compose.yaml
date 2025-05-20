@@ -1,17 +1,18 @@
-version: '3.8'
-
 services:
   mini-identity-provider:
-    image: your-mini-identity-provider-image:latest
+    image: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider:latest
     ports:
       - "8082:8080"
     environment:
-      - ENV_VAR=example
+      EncryptionCertificate__Crt: "-----BEGIN CERTIFICATE-----\nMIIDWTCCAkGgAwIBAgIUPBfGgSr4HZ9TJ0/HVJ8JR+lkUfkwDQYJKoZIhvcNAQEL\nBQAwPDE6MDgGA1UEAwwxTWluaSBJZGVudGl0eSBQcm92aWRlciBTZXJ2ZXIgU2ln\nbmluZyBDZXJ0aWZpY2F0ZTAeFw0yNTA1MjAwOTM3MTBaFw0zNTA1MTgwOTM3MTBa\nMDwxOjA4BgNVBAMMMU1pbmkgSWRlbnRpdHkgUHJvdmlkZXIgU2VydmVyIFNpZ25p\nbmcgQ2VydGlmaWNhdGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCn\nenQzrYMpL+1XL7EFRJrCHBjwHHI/oc7vGAeeOua1lNTfLryPnuQWHICnvGCqCP1P\nlySDbuIcqOEnMW0dXohC8Rur5oxrndKbUUZ/vyqn++5uYS+ilG+KTokkLeESrXZY\nxTJCdUTel+y7U38Li7LteE743KR4A9cMB/b+8WLEAz/XoeyrXILhsmckSCeRhiPr\nMM8Jgn9E2EPXQxPGoeOA547FTUoRo1jdcI6VKOVqELF7minRbJMkSbhuk9leF/Uy\n9xRipxlDssEkObm4z2vGN1Ckhihv8JcRIPQc4H4s99iT3jtxzDttBi96xYAYWQMo\nUmnD1OcLTLYYPTtnX/xnAgMBAAGjUzBRMB0GA1UdDgQWBBSGcQtRogiz46ZJV8nc\n3G0g6ym1vDAfBgNVHSMEGDAWgBSGcQtRogiz46ZJV8nc3G0g6ym1vDAPBgNVHRMB\nAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQA6yH/AeCZRV2p76WLIs11K3WZy\n49ydAqkksTHP93oJJvt+phKZKJV8vz9QQ3M15Ml7eCYO8SDtVmMCa/OY/bhxyc8/\ncmW57K7scIW43Gm9Ngs4yT5LEnTgL/wo3otBdnqd2H+r6Q50iwRs37dZDUgqRpgM\n9zjrbn5cHbXDOViLaVHrTa9xGMsEPde7j03XC0PREVbkNFi4aC8WURxH+/+iTxMM\nvVanCLqVJqRH17mDE7Dys0jEgvPBBCcJ+wq31VPageLzZ83g+OfLSuz6vxAuZUqP\nl+edbLczbK91+nI/r1h6IaUMZCc6mHjezyxrYOb6lIPvc3Qzf5keLPt0Hxbz\n-----END CERTIFICATE-----\n"
+      EncryptionCertificate__Key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDYJjtzd6uNBYnO\nVqsXm774GJ4nJliTCKEmiTQRZQk6fujMATiXncwGxJH9imDKnMAzWlFO9nxqp0nv\nTFJepILOxIRAJhx+GKy/qGa/qRSJEEzEJ+ue/niW1CUBoxy7HDD4FYNceXIzaLHi\n1ZRNp9BHU9sxh+6AZj8+NQ7xNLJU/nY1yFHXMIka7bjqNG+4AblvsjygheuTUhvN\nQAMZfcx8ujn9mERZxku0iWQpIdoT4vCxVzjFvYbozpJlZS2Fi0u+doAP77XDCX9R\n2cmzcGp6eciHFEUN61rt8EEdfGgQFVHTJUDy1mx/NemihkhZKPwSZjJku7a5HiK3\nYcxmWFY3AgMBAAECggEAB9Uza+bZW2zWmM+wya+V9x5aZ7Lu0zSlEKUUDpor7hWq\n1UpNwH3yL7+9/TENMZp0J78a6+mxd9A/tQF90l8vF8GIV11X6SB3EZBhxxwgPnQp\nZ26iDgZM3NeHGBGYEAQOTWBVDz4wRwulkp0kD5t/SBMAFGZ+bpm8zx1c9+ZJCq71\nMobk+imFlev35GAHiH/JO7FqjBRK/cIwQky6qPSffdZoMPEQUBbQG8/pvXXaXkot\ntTvgfHljJFckbjphuI2bUl3NHh1hL9YQ0E1sakcLgFMm0GXZbTHqxz2JHd4d3P1/\nsXyl3uSFMXR9Z0OCAsRjj+Kyd+HEtc/Xf+4XbKFIJQKBgQD1BTbu7GvJV8vtSRsO\nyxBa4jatLl/da3zcBeseSC4eng0lLy9UPmbM3vgZgNrnCP7XpubU1JkAtxrO7+zX\n6xRM33qcSUiKlNzgKl7/RDw9g3tABP9hKLPo74Bw3urYTa40GmogDIYCkcFUzDNe\njX/6ifsQIAbfGowDGrgqP7bI/QKBgQDh1dHUody+puJu8cZpRMpQzbvu0eDMb1tx\nBKDiY0VEedTgdVxt/BGb+ou6GwUpD+X4Esavf2OIK+WeheXbd0IfEMFp9sB/jRTo\nEyaK7jYGNkR7wpndH20VLstObxS6ZTE/BASok1VLL6qlohud5yaCsV/4UCczTco6\nD6jw1MNsQwKBgBsimrTXJhDEUmdTA1YeEw+doeSIEEHbV5aeaS2PXNwzMM1/bkRs\nLMJfpyZb6OJRUrfbWhEUAmXb4XItjBNVi4f/7/pC+2+tkNCaoK6wheNiHlI2u3mt\nIk+Xxqe5aFTQNYy7qCkoeebq8XhMrRu5nATJJy7f/SLUM9FcMi0rpTiZAoGAb+jh\nHhlHpkJUmt28kJXCG+CXbHUcjLHyAkNk5kqDHLeywbfmoanzn/O8IfEZ0YtLTm8f\nfgAGdogqNS/tA6BJZ9OJxNS993cWERrMUrRQmStzLFD2phjYmVKi9K8e+m8CxFNd\na5v2/FcWnRWD0e+lqcXz5Lzzb/zwZW01LoKAhLkCgYB7sqxhBjdb87BzzV4Kpi1/\n0ac6q2MbAv3JLFw2USj+cf0U9A6G+rfC6TEtOO0YBqwh7q8ri00Frtb6Vizfw1k/\nV2P7h0PCDdkkv7/dKeUbVXp9uCKYHs2cDzRyTT7JnHxtlzsA/FTI2FSF2F9U8uVt\nkGOrQg0yfbLjDN4dvmTnBA==\n-----END PRIVATE KEY-----\n"
+      SigningCertificate__Crt: "-----BEGIN CERTIFICATE-----\nMIIDWTCCAkGgAwIBAgIUPBfGgSr4HZ9TJ0/HVJ8JR+lkUfkwDQYJKoZIhvcNAQEL\nBQAwPDE6MDgGA1UEAwwxTWluaSBJZGVudGl0eSBQcm92aWRlciBTZXJ2ZXIgU2ln\nbmluZyBDZXJ0aWZpY2F0ZTAeFw0yNTA1MjAwOTM3MTBaFw0zNTA1MTgwOTM3MTBa\nMDwxOjA4BgNVBAMMMU1pbmkgSWRlbnRpdHkgUHJvdmlkZXIgU2VydmVyIFNpZ25p\nbmcgQ2VydGlmaWNhdGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCn\nenQzrYMpL+1XL7EFRJrCHBjwHHI/oc7vGAeeOua1lNTfLryPnuQWHICnvGCqCP1P\nlySDbuIcqOEnMW0dXohC8Rur5oxrndKbUUZ/vyqn++5uYS+ilG+KTokkLeESrXZY\nxTJCdUTel+y7U38Li7LteE743KR4A9cMB/b+8WLEAz/XoeyrXILhsmckSCeRhiPr\nMM8Jgn9E2EPXQxPGoeOA547FTUoRo1jdcI6VKOVqELF7minRbJMkSbhuk9leF/Uy\n9xRipxlDssEkObm4z2vGN1Ckhihv8JcRIPQc4H4s99iT3jtxzDttBi96xYAYWQMo\nUmnD1OcLTLYYPTtnX/xnAgMBAAGjUzBRMB0GA1UdDgQWBBSGcQtRogiz46ZJV8nc\n3G0g6ym1vDAfBgNVHSMEGDAWgBSGcQtRogiz46ZJV8nc3G0g6ym1vDAPBgNVHRMB\nAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQA6yH/AeCZRV2p76WLIs11K3WZy\n49ydAqkksTHP93oJJvt+phKZKJV8vz9QQ3M15Ml7eCYO8SDtVmMCa/OY/bhxyc8/\ncmW57K7scIW43Gm9Ngs4yT5LEnTgL/wo3otBdnqd2H+r6Q50iwRs37dZDUgqRpgM\n9zjrbn5cHbXDOViLaVHrTa9xGMsEPde7j03XC0PREVbkNFi4aC8WURxH+/+iTxMM\nvVanCLqVJqRH17mDE7Dys0jEgvPBBCcJ+wq31VPageLzZ83g+OfLSuz6vxAuZUqP\nl+edbLczbK91+nI/r1h6IaUMZCc6mHjezyxrYOb6lIPvc3Qzf5keLPt0Hxbz\n-----END CERTIFICATE-----\n"
+      SigningCertificate__Key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDYJjtzd6uNBYnO\nVqsXm774GJ4nJliTCKEmiTQRZQk6fujMATiXncwGxJH9imDKnMAzWlFO9nxqp0nv\nTFJepILOxIRAJhx+GKy/qGa/qRSJEEzEJ+ue/niW1CUBoxy7HDD4FYNceXIzaLHi\n1ZRNp9BHU9sxh+6AZj8+NQ7xNLJU/nY1yFHXMIka7bjqNG+4AblvsjygheuTUhvN\nQAMZfcx8ujn9mERZxku0iWQpIdoT4vCxVzjFvYbozpJlZS2Fi0u+doAP77XDCX9R\n2cmzcGp6eciHFEUN61rt8EEdfGgQFVHTJUDy1mx/NemihkhZKPwSZjJku7a5HiK3\nYcxmWFY3AgMBAAECggEAB9Uza+bZW2zWmM+wya+V9x5aZ7Lu0zSlEKUUDpor7hWq\n1UpNwH3yL7+9/TENMZp0J78a6+mxd9A/tQF90l8vF8GIV11X6SB3EZBhxxwgPnQp\nZ26iDgZM3NeHGBGYEAQOTWBVDz4wRwulkp0kD5t/SBMAFGZ+bpm8zx1c9+ZJCq71\nMobk+imFlev35GAHiH/JO7FqjBRK/cIwQky6qPSffdZoMPEQUBbQG8/pvXXaXkot\ntTvgfHljJFckbjphuI2bUl3NHh1hL9YQ0E1sakcLgFMm0GXZbTHqxz2JHd4d3P1/\nsXyl3uSFMXR9Z0OCAsRjj+Kyd+HEtc/Xf+4XbKFIJQKBgQD1BTbu7GvJV8vtSRsO\nyxBa4jatLl/da3zcBeseSC4eng0lLy9UPmbM3vgZgNrnCP7XpubU1JkAtxrO7+zX\n6xRM33qcSUiKlNzgKl7/RDw9g3tABP9hKLPo74Bw3urYTa40GmogDIYCkcFUzDNe\njX/6ifsQIAbfGowDGrgqP7bI/QKBgQDh1dHUody+puJu8cZpRMpQzbvu0eDMb1tx\nBKDiY0VEedTgdVxt/BGb+ou6GwUpD+X4Esavf2OIK+WeheXbd0IfEMFp9sB/jRTo\nEyaK7jYGNkR7wpndH20VLstObxS6ZTE/BASok1VLL6qlohud5yaCsV/4UCczTco6\nD6jw1MNsQwKBgBsimrTXJhDEUmdTA1YeEw+doeSIEEHbV5aeaS2PXNwzMM1/bkRs\nLMJfpyZb6OJRUrfbWhEUAmXb4XItjBNVi4f/7/pC+2+tkNCaoK6wheNiHlI2u3mt\nIk+Xxqe5aFTQNYy7qCkoeebq8XhMrRu5nATJJy7f/SLUM9FcMi0rpTiZAoGAb+jh\nHhlHpkJUmt28kJXCG+CXbHUcjLHyAkNk5kqDHLeywbfmoanzn/O8IfEZ0YtLTm8f\nfgAGdogqNS/tA6BJZ9OJxNS993cWERrMUrRQmStzLFD2phjYmVKi9K8e+m8CxFNd\na5v2/FcWnRWD0e+lqcXz5Lzzb/zwZW01LoKAhLkCgYB7sqxhBjdb87BzzV4Kpi1/\n0ac6q2MbAv3JLFw2USj+cf0U9A6G+rfC6TEtOO0YBqwh7q8ri00Frtb6Vizfw1k/\nV2P7h0PCDdkkv7/dKeUbVXp9uCKYHs2cDzRyTT7JnHxtlzsA/FTI2FSF2F9U8uVt\nkGOrQg0yfbLjDN4dvmTnBA==\n-----END PRIVATE KEY-----\n"
+      Issuer: "http://mini-identity-provider:8080"
+      Clients__0__Id: "vaas"
+      Clients__0__Secret: "O1xfu3Tqk3Pzwux2"
     networks:
       - vaas
-    # volumes:
-    #   - ./mini-identity-provider:/mini-identity-provider
-    # command: ["your", "start", "command"]
 
   gateway:
     image: ghcr.io/gdatasoftwareag/vaas/gateway:1.3.10
@@ -28,9 +29,13 @@ services:
       MaxAnalysisDuration: "00:20:00"
       FileCloudVerdictSource__Enable: true
       FileAllowlistCloudVerdictSource__Enable: true
-      JwtSettings__Secret: ""
+      JwtSettings__Secret: "RN5mKNNOtGrd5u75PHHg2YWEBzng7iBabnuDG4yjcPsRE1e972nDSKruu3Mztqvkcym3U76JnX2TCcusaKLZHGF4vjvtPY7tRHjojltVskspSfPD7TSsIkyct9EcLfuhTl08t5F6ahmGHTAkDIXMIRZZyFvarclHypABIeY95OkvevBMgp2lIWpVTrOhiu9EVNQiRqu04VNJaV3k9WFxqxZ0Tv4mjlmJPRGu0npN0EO63GvESTK2BaLnDn2gMIWd"
     networks:
       - vaas
+    depends_on:
+      - mini-identity-provider
+      - gdscan
+      - redis
 
   gdscan:
     image: ghcr.io/gdatasoftwareag/vaas/scanner:1.13.1
