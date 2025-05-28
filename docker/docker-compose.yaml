@@ -41,7 +41,7 @@ services:
     environment:
       Authentication__Schemes__Bearer__Authority: "http://mini-identity-provider:8080"
       Authentication__Schemes__Bearer__RequireHttpsMetadata: false
-      Upload__Endpoint: "http://localhost:8081"
+      Upload__Endpoint: "http://localhost:8080/upload"
       GDScanConfiguration__Url: http://gdscan:8080/scan/body
       RedisConfiguration__Configuration: redis
       DOTNET_ENVIRONMENT: vaas
