@@ -1,28 +1,17 @@
 {{- if .Values.gateway.ingress.enabled -}}
 {{- $fullName := include "gateway.fullname" . -}}
-{{- if and .Values.gateway.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.gateway.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.gateway.ingress.annotations "kubernetes.io/ingress.class" .Values.gateway.ingress.className}}
-  {{- end }}
-{{- end }}
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $defaultAnnotations := dict "nginx.ingress.kubernetes.io/proxy-body-size" "2G" "nginx.ingress.kubernetes.io/proxy-request-buffering" "off" }}
+{{- $mergedAnnotations := merge (.Values.gateway.ingress.annotations | default dict) $defaultAnnotations }}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
     {{- include "gateway.labels" . | nindent 4 }}
-  {{- with .Values.gateway.ingress.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- toYaml $mergedAnnotations | nindent 4 }}
 spec:
-  {{- if and .Values.gateway.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  {{- if .Values.gateway.ingress.className }}
   ingressClassName: {{ .Values.gateway.ingress.className }}
   {{- end }}
   {{- if .Values.gateway.ingress.tls }}
@@ -42,19 +31,14 @@ spec:
         paths:
           {{- range .paths }}
           - path: {{ .path }}
-            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            {{- if .pathType }}
             pathType: {{ .pathType }}
             {{- end }}
             backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: {{ .service.name }}
                 port:
                   number: {{ .service.port }}
-              {{- else }}
-              serviceName: {{ .service.name }}
-              servicePort: {{ .service.port }}
-              {{- end }}
           {{- end }}
     {{- end }}
 {{- end }}
