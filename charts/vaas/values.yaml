@@ -1,4 +1,6 @@
 global:
+  security:
+    allowInsecureImages: true
   imagePullSecrets: []
   secret:
     dockerconfigjson: "e30K"
@@ -305,6 +307,8 @@ gdscan:
         memory: 64Mi
 
 redis:
+  image:
+    repository: bitnamilegacy/redis
   enabled: true
   architecture: standalone
   fullnameOverride: redis
