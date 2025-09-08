@@ -18,13 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Vaas Helm
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           path: vaas-helm
 
       - name: Checkout Vaas Java SDK
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: GDATASoftwareAG/vaas
           path: vaas-sdks
@@ -42,7 +42,7 @@ jobs:
           version: v3.18.4
 
       - name: Install python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3
 
