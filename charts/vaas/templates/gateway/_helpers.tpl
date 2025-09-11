@@ -24,24 +24,44 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{- define "gateway.imagePullSecrets" -}}
-{{- if or (gt (len .Values.global.imagePullSecrets) 0) (.Values.imagePullSecret) (((.Values.global).secret).imagePullSecret) (((.Values.global).secret).dockerconfigjson) }}
+{{- $ips := .Values.global.imagePullSecrets | default (list) -}}
+{{- $hasIps := gt (len $ips) 0 -}}
+{{- $hasLocal := .Values.imagePullSecret -}}
+{{- $hasGlobalImagePullSecret := ((.Values.global).secret).imagePullSecret -}}
+{{- $hasGlobalDockerconfig := ((.Values.global).secret).dockerconfigjson -}}
+
+{{- if or $hasIps $hasLocal $hasGlobalImagePullSecret $hasGlobalDockerconfig }}
 imagePullSecrets:
-  {{- range .Values.global.imagePullSecrets }}
-  - name: {{ . }}
+  {{- range $i, $entry := $ips }}
+    {{- if kindIs "string" $entry }}
+  - name: {{ $entry }}
+    {{- else if kindIs "map" $entry }}
+      {{- if hasKey $entry "name" }}
+  - name: {{ get $entry "name" }}
+      {{- else if hasKey $entry "secretName" }}
+  - name: {{ get $entry "secretName" }}
+      {{- else }}
+      {{- fail (printf "global.imagePullSecrets[%d] must have key 'name' (or 'secretName'). Got keys: %v" $i (keys $entry)) }}
+      {{- end }}
+    {{- else }}
+    {{- fail (printf "global.imagePullSecrets[%d] has unsupported kind %s (type %s)" $i (kindOf $entry) (typeOf $entry)) }}
+    {{- end }}
   {{- end }}
-  {{- if .Values.imagePullSecret }}
+
+  {{- if $hasLocal }}
   - name: {{ include "gateway.fullname" . }}-image-pull-secret
   {{- end }}
-  {{- if ((.Values.global).secret).imagePullSecret }}
+  {{- if $hasGlobalImagePullSecret }}
   - name: {{ include "gateway.fullname" . }}-global-image-pull-secret
   {{- end }}
-  {{- if ((.Values.global).secret).dockerconfigjson }}
+  {{- if $hasGlobalDockerconfig }}
   - name: {{ include "gateway.fullname" . }}-global-dockerconfigjson
   {{- end }}
 {{- else -}}
-{{- fail "You have to set at least one imagePullSecret" }}
+{{- fail "You have to set at least one imagePullSecret (global.imagePullSecrets, imagePullSecret, global.secret.imagePullSecret or global.secret.dockerconfigjson)" }}
 {{- end -}}
-{{ end -}}
+{{- end -}}
+
 
 
 {{/*
