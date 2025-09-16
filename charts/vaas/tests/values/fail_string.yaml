@@ -1,0 +1,7 @@
+_tests:
+  enableImagePullSecretsTest: true
+global:
+  imagePullSecrets:
+    - my-secret
+redis:
+  enabled: false

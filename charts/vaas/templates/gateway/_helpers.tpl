@@ -25,6 +25,17 @@ If release name contains chart name it will be used as a full name.
 
 {{- define "gateway.imagePullSecrets" -}}
 {{- $ips := .Values.global.imagePullSecrets | default (list) -}}
+
+{{- range $i, $e := $ips }}
+  {{- if not (kindIs "map" $e) -}}
+    {{- fail (printf "global.imagePullSecrets[%d] must be an object with 'name' (or 'secretName'), not %s" $i (kindOf $e)) -}}
+  {{- end -}}
+  {{- $n := (get $e "name") | default (get $e "secretName") -}}
+  {{- if not $n -}}
+    {{- fail (printf "global.imagePullSecrets[%d] must contain key 'name' or 'secretName'. Got keys: %v" $i (keys $e)) -}}
+  {{- end -}}
+{{- end }}
+
 {{- $hasIps := gt (len $ips) 0 -}}
 {{- $hasLocal := .Values.imagePullSecret -}}
 {{- $hasGlobalImagePullSecret := ((.Values.global).secret).imagePullSecret -}}
@@ -32,17 +43,9 @@ If release name contains chart name it will be used as a full name.
 
 {{- if or $hasIps $hasLocal $hasGlobalImagePullSecret $hasGlobalDockerconfig }}
 imagePullSecrets:
-  {{- range $i, $entry := $ips }}
-    {{- if not (kindIs "map" $entry) -}}
-      {{- fail (printf "global.imagePullSecrets[%d] must be an object with 'name' (or 'secretName'), not %s" $i (kindOf $entry)) -}}
-    {{- end -}}
-    {{- $name := (get $entry "name") | default (get $entry "secretName") -}}
-    {{- if not $name -}}
-      {{- fail (printf "global.imagePullSecrets[%d] must contain key 'name' or 'secretName'. Got keys: %v" $i (keys $entry)) -}}
-    {{- end }}
-  - name: {{ $name }}
+  {{- range $i, $e := $ips }}
+  - name: {{ (get $e "name") | default (get $e "secretName") }}
   {{- end }}
-
   {{- if $hasLocal }}
   - name: {{ include "gateway.fullname" . }}-image-pull-secret
   {{- end }}
@@ -56,6 +59,7 @@ imagePullSecrets:
 {{- fail "You have to set at least one imagePullSecret: use global.imagePullSecrets (objects with 'name'/'secretName') or set imagePullSecret/global.secret.*" }}
 {{- end -}}
 {{- end -}}
+
 
 {{/*
 Create chart name and version as used by the chart label.

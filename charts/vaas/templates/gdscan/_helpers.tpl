@@ -44,6 +44,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{- define "gdscan.imagePullSecrets" -}}
 {{- $ips := .Values.global.imagePullSecrets | default (list) -}}
+
+{{- range $i, $e := $ips }}
+  {{- if not (kindIs "map" $e) -}}
+    {{- fail (printf "global.imagePullSecrets[%d] must be an object with 'name' (or 'secretName'), not %s" $i (kindOf $e)) -}}
+  {{- end -}}
+  {{- $n := (get $e "name") | default (get $e "secretName") -}}
+  {{- if not $n -}}
+    {{- fail (printf "global.imagePullSecrets[%d] must contain key 'name' or 'secretName'. Got keys: %v" $i (keys $e)) -}}
+  {{- end -}}
+{{- end }}
+
 {{- $hasIps := gt (len $ips) 0 -}}
 {{- $hasLocal := .Values.imagePullSecret -}}
 {{- $hasGlobalImagePullSecret := ((.Values.global).secret).imagePullSecret -}}
@@ -51,22 +62,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{- if or $hasIps $hasLocal $hasGlobalImagePullSecret $hasGlobalDockerconfig }}
 imagePullSecrets:
-  {{- range $i, $entry := $ips }}
-    {{- if kindIs "string" $entry }}
-  - name: {{ $entry }}
-    {{- else if kindIs "map" $entry }}
-      {{- if hasKey $entry "name" }}
-  - name: {{ get $entry "name" }}
-      {{- else if hasKey $entry "secretName" }}
-  - name: {{ get $entry "secretName" }}
-      {{- else }}
-      {{- fail (printf "global.imagePullSecrets[%d] must have key 'name' (or 'secretName'). Got keys: %v" $i (keys $entry)) }}
-      {{- end }}
-    {{- else }}
-    {{- fail (printf "global.imagePullSecrets[%d] has unsupported kind %s (type %s)" $i (kindOf $entry) (typeOf $entry)) }}
-    {{- end }}
+  {{- range $i, $e := $ips }}
+  - name: {{ (get $e "name") | default (get $e "secretName") }}
   {{- end }}
-
   {{- if $hasLocal }}
   - name: {{ include "gdscan.fullname" . }}-image-pull-secret
   {{- end }}
@@ -77,7 +75,7 @@ imagePullSecrets:
   - name: {{ include "gdscan.fullname" . }}-global-dockerconfigjson
   {{- end }}
 {{- else -}}
-{{- fail "You have to set at least one imagePullSecret (global.imagePullSecrets, imagePullSecret, global.secret.imagePullSecret or global.secret.dockerconfigjson)" }}
+{{- fail "You have to set at least one imagePullSecret: use global.imagePullSecrets (objects with 'name'/'secretName') or set imagePullSecret/global.secret.*" }}
 {{- end -}}
 {{- end -}}
 

@@ -49,6 +49,9 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.7.0
 
+      - name: Install helm unittest
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git
+
       - name: Extract tag
         id: extract_tag
         run: |
@@ -60,6 +63,9 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: ct lint --validate-maintainers=false --charts vaas-helm/charts/vaas
+
+      - name: Run helm unittest
+        run: helm unittest --strict charts/vaas
 
       - name: Install Minikube
         uses: manusa/actions-setup-minikube@v2.13.1
