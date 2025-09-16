@@ -44,7 +44,9 @@ You need to substitute the username and password with the credentials we provide
 ```yaml
 global:
   imagePullSecrets:
-    - my-image-pull-secret
+    - name: my-image-pull-secret
+    - name: my-other-image-pull-secret
+    ...
 ```
 
 
