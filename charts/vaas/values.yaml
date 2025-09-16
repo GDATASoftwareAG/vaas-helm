@@ -349,8 +349,5 @@ redis:
           - ports:
               - protocol: TCP
                 port: 6379
-        egress:
-          - {}
         policyTypes:
           - Ingress
-          - Egress
