@@ -65,7 +65,7 @@ jobs:
         run: ct lint --validate-maintainers=false --charts vaas-helm/charts/vaas
 
       - name: Run helm unittest
-        run: helm unittest --strict charts/vaas
+        run: helm unittest --strict vaas-helm/charts/vaas
 
       - name: Install Minikube
         uses: manusa/actions-setup-minikube@v2.13.1
