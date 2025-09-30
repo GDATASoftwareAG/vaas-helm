@@ -320,11 +320,9 @@ redis:
   persistence:
     enabled: false
   podSecurityContext:
-    enabled: true
     fsGroupChangePolicy: "OnRootMismatch"
     fsGroup: 1001
   containerSecurityContext:
-    enabled: true
     readOnlyRootFilesystem: true
     allowPrivilegeEscalation: false
     runAsNonRoot: true
