@@ -68,7 +68,7 @@ jobs:
         run: helm unittest --strict vaas-helm/charts/vaas
 
       - name: Install Minikube
-        uses: manusa/actions-setup-minikube@v2.13.1
+        uses: manusa/actions-setup-minikube@v2.14.0
         with:
           minikube version: v1.34.0
           kubernetes version: v1.30.0
@@ -139,7 +139,7 @@ jobs:
 
       - name: Push chart
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: appany/helm-oci-chart-releaser@v0.4.2
+        uses: appany/helm-oci-chart-releaser@v0.5.0
         with:
           name: vaas
           repository: gdatasoftwareag/charts
