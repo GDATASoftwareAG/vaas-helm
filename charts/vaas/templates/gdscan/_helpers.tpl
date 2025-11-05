@@ -43,24 +43,41 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{- define "gdscan.imagePullSecrets" -}}
-{{- if or (gt (len .Values.global.imagePullSecrets) 0) (.Values.imagePullSecret) (((.Values.global).secret).imagePullSecret) (((.Values.global).secret).dockerconfigjson) }}
+{{- $ips := .Values.global.imagePullSecrets | default (list) -}}
+
+{{- range $i, $e := $ips }}
+  {{- if not (kindIs "map" $e) -}}
+    {{- fail (printf "global.imagePullSecrets[%d] must be an object with 'name' (or 'secretName'), not %s" $i (kindOf $e)) -}}
+  {{- end -}}
+  {{- $n := (get $e "name") | default (get $e "secretName") -}}
+  {{- if not $n -}}
+    {{- fail (printf "global.imagePullSecrets[%d] must contain key 'name' or 'secretName'. Got keys: %v" $i (keys $e)) -}}
+  {{- end -}}
+{{- end }}
+
+{{- $hasIps := gt (len $ips) 0 -}}
+{{- $hasLocal := .Values.imagePullSecret -}}
+{{- $hasGlobalImagePullSecret := ((.Values.global).secret).imagePullSecret -}}
+{{- $hasGlobalDockerconfig := ((.Values.global).secret).dockerconfigjson -}}
+
+{{- if or $hasIps $hasLocal $hasGlobalImagePullSecret $hasGlobalDockerconfig }}
 imagePullSecrets:
-  {{- range .Values.global.imagePullSecrets }}
-  - name: {{ . }}
+  {{- range $i, $e := $ips }}
+  - name: {{ (get $e "name") | default (get $e "secretName") }}
   {{- end }}
-  {{- if .Values.imagePullSecret }}
+  {{- if $hasLocal }}
   - name: {{ include "gdscan.fullname" . }}-image-pull-secret
   {{- end }}
-  {{- if ((.Values.global).secret).imagePullSecret }}
+  {{- if $hasGlobalImagePullSecret }}
   - name: {{ include "gdscan.fullname" . }}-global-image-pull-secret
   {{- end }}
-  {{- if ((.Values.global).secret).dockerconfigjson }}
+  {{- if $hasGlobalDockerconfig }}
   - name: {{ include "gdscan.fullname" . }}-global-dockerconfigjson
   {{- end }}
 {{- else -}}
-{{- fail "You have to set at least one imagePullSecret" }}
+{{- fail "You have to set at least one imagePullSecret: use global.imagePullSecrets (objects with 'name'/'secretName') or set imagePullSecret/global.secret.*" }}
 {{- end -}}
-{{ end -}}
+{{- end -}}
 
 {{/*
 Selector labels

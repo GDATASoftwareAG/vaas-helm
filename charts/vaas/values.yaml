@@ -307,37 +307,45 @@ gdscan:
         memory: 64Mi
 
 redis:
-  image:
-    repository: bitnamilegacy/redis
   enabled: true
-  architecture: standalone
   fullnameOverride: redis
   auth:
     enabled: false
-  master:
-    disableCommands: []
-    resources:
-      limits:
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 64Mi
-    persistence:
-      enabled: false
-    podSecurityContext:
-      enabled: true
-      fsGroupChangePolicy: "OnRootMismatch"
-      fsGroup: 1001
-    containerSecurityContext:
-      enabled: true
-      readOnlyRootFilesystem: true
-      allowPrivilegeEscalation: false
-      runAsNonRoot: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-      runAsUser: 1001
-      runAsGroup: 1001
-  networkPolicy:
-    enabled: true
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+  persistence:
+    enabled: false
+  podSecurityContext:
+    fsGroupChangePolicy: "OnRootMismatch"
+    fsGroup: 1001
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    runAsNonRoot: true
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
+    runAsUser: 1001
+    runAsGroup: 1001
+  extraObjects:
+    - apiVersion: networking.k8s.io/v1
+      kind: NetworkPolicy
+      metadata:
+        name: redis
+        namespace: "{{ .Release.Namespace }}"
+      spec:
+        podSelector:
+          matchLabels:
+            app.kubernetes.io/instance: "{{ .Release.Namespace }}"
+            app.kubernetes.io/name: redis
+        ingress:
+          - ports:
+              - protocol: TCP
+                port: 6379
+        policyTypes:
+          - Ingress
