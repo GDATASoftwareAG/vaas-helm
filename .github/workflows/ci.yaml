@@ -18,13 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Vaas Helm
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           path: vaas-helm
 
       - name: Checkout Vaas Java SDK
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: GDATASoftwareAG/vaas
           path: vaas-sdks
