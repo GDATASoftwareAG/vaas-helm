@@ -24,7 +24,7 @@ spec:
       port: {{ $values.port }}
       protocol: {{ $values.protocol }}
       {{- if $values.hostname }}
-      hostname: {{ $values.hostname }}
+      hostname: {{ $values.hostname | quote }}
       {{- end }}
       {{- if $values.tlsSecretName }}
       tls:
