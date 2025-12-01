@@ -217,7 +217,22 @@ In addition, Sentry will always behave as follows:
 | global.secret.imagePullSecret             | Image pull secret                                                                                     | "e30K"                         |
 | cloud.hashLookup.enabled                  | Enable/Disable the cloud hash lookup                                                                  | true                           |
 | cloud.allowlistLookup.enabled             | Enable/Disable the cloud allowlist lookup                                                             | true                           |
-| gateway.ingress.enabled                   | Enable/Disable the Ingress resource                                                                   | false                          |
+| gatewayApi.enabled                        | Enable/Disable Gateway API resources                                                                  | false                          |
+| gatewayApi.nameOverride                   | Overrides the Gateway API application name                                                            | ""                             |
+| gatewayApi.fullnameOverride               | Overrides the Gateway API full name                                                                   | "gateway-api"                  |
+| gatewayApi.gatewayClassName               | Gateway class name for Gateway API                                                                    | "eg"                           |
+| gatewayApi.annotations                    | Additional annotations for Gateway API                                                                | {}                             |
+| gatewayApi.infrastructure.annotations     | Infrastructure-specific annotations for Gateway API                                                   | {}                             |
+| gatewayApi.listeners.https.hostname       | Hostname for HTTPS listener                                                                           | ""                             |
+| gatewayApi.listeners.https.protocol       | Protocol for HTTPS listener                                                                           | HTTPS                          |
+| gatewayApi.listeners.https.port           | Port for HTTPS listener                                                                               | 443                            |
+| gatewayApi.listeners.https.tlsSecretName  | TLS secret name for HTTPS listener                                                                    | "gateway-api-tls"              |
+| gatewayApi.listeners.http.hostname        | Hostname for HTTP listener                                                                            | ""                             |
+| gatewayApi.listeners.http.protocol        | Protocol for HTTP listener                                                                            | HTTP                           |
+| gatewayApi.listeners.http.port            | Port for HTTP listener                                                                                | 80                             |
+| gateway.httpRoute.enabled                 | Enable/Disable HTTPRoute resource for Gateway API                                                     | false                          |
+| gateway.httpRoute.hostname                | Hostname for HTTPRoute                                                                                | ""                             |
+| gateway.ingress.enabled                   | Enable/Disable the Ingress resource (deprecated: use gatewayApi and httpRoute instead)                | true                           |
 | gateway.ingress.annotations               | Additional annotations for Ingress                                                                    | {}                             |
 | gateway.ingress.hosts                     | Hostnames and paths for Ingress                                                                       | []                             |
 | gateway.ingress.tls`                      | TLS configuration for Ingress                                                                         | []                             |
