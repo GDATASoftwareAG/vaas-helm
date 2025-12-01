@@ -20,6 +20,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
+        {{- if .Values.gateway.podLabels }}
+        {{ toYaml .Values.gateway.podLabels | nindent 8 }}
+        {{- end }}
         {{- include "gateway.selectorLabels" . | nindent 8 }}
     spec:
       {{- include "gateway.imagePullSecrets" . | nindent 6 }}

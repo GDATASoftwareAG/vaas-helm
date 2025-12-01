@@ -1,3 +1,8 @@
+#######################################################################
+###           DEPRECATED: Will be replaced by Gateway API           ###
+### https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/ ###
+#######################################################################
+
 {{- if .Values.gateway.ingress.enabled -}}
 {{- $fullName := include "gateway.fullname" . -}}
 {{- $defaultAnnotations := dict "nginx.ingress.kubernetes.io/proxy-body-size" "2G" "nginx.ingress.kubernetes.io/proxy-request-buffering" "off" }}
