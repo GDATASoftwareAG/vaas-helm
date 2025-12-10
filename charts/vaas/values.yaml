@@ -160,6 +160,17 @@ gateway:
 
   metrics:
     enabled: false
+    targetPort: 9110
+    livenessProbe:
+      enabled: true
+      httpGet:
+        path: /health
+      timeoutSeconds: 5
+    readinessProbe:
+      enabled: true
+      httpGet:
+        path: /health
+      timeoutSeconds: 5
     port: http
     path: /metrics
 
