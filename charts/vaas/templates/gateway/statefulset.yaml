@@ -28,7 +28,8 @@ spec:
       {{- include "gateway.imagePullSecrets" . | nindent 6 }}
       volumes:
         - name: gateway-tmp
-          emptyDir: {}
+          emptyDir:
+            sizeLimit: "1Gi"
       {{- if .Values.gateway.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.gateway.podSecurityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
