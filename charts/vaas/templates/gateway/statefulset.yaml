@@ -80,15 +80,11 @@ spec:
             - name: ws
               containerPort: {{ .Values.gateway.service.ws.port }}
               protocol: TCP
-           {{- if .Values.gateway.metrics.enabled }}
-            - name: metrics
-              containerPort: {{ .Values.gateway.metrics.targetPort }}
-              protocol: TCP
           {{- if .Values.gateway.metrics.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: {{ .Values.gateway.metrics.livenessProbe.httpGet.path }}
-              port: {{ .Values.gateway.metrics.livenessProbe.httpGet.port | default "metrics" }}
+              port: {{ .Values.gateway.metrics.livenessProbe.httpGet.port | default "http" }}
             timeoutSeconds: {{ .Values.gateway.metrics.livenessProbe.timeoutSeconds }}
             {{- with .Values.gateway.metrics.livenessProbe.initalDelaySeconds }}
             initialDelaySeconds: {{ . }}
@@ -107,7 +103,7 @@ spec:
           readinessProbe:
             httpGet:
               path: {{ .Values.gateway.metrics.readinessProbe.httpGet.path }}
-              port: {{ .Values.gateway.metrics.readinessProbe.httpGet.port | default "metrics" }}
+              port: {{ .Values.gateway.metrics.readinessProbe.httpGet.port | default "http" }}
             timeoutSeconds: {{ .Values.gateway.metrics.readinessProbe.timeoutSeconds }}
             {{- with .Values.gateway.metrics.readinessProbe.initalDelaySeconds }}
             initialDelaySeconds: {{ . }}
@@ -121,7 +117,6 @@ spec:
             {{- with .Values.gateway.metrics.readinessProbe.failureThreshold }}
             failureThreshold: {{ . }}
             {{- end }}
-          {{- end }}
           {{- end }}
           resources:
             {{- toYaml .Values.gateway.resources | nindent 12 }}

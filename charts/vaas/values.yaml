@@ -160,7 +160,6 @@ gateway:
 
   metrics:
     enabled: false
-    targetPort: 9110
     livenessProbe:
       enabled: true
       httpGet:
