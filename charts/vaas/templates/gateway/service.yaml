@@ -15,5 +15,9 @@ spec:
       targetPort: ws
       protocol: TCP
       name: ws
+    - port: {{ .Values.gateway.service.metrics.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
   selector:
     {{- include "gateway.selectorLabels" . | nindent 4 }}

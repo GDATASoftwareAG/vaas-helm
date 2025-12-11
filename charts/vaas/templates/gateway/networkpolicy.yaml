@@ -16,6 +16,7 @@ spec:
     - from:
       ports:
         - port: 8080 # Upload
+        - port: 8081 # Metrics
         - port: 9090 # Websocket
   egress:
     - to:
