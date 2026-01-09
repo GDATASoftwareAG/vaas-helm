@@ -160,16 +160,6 @@ gateway:
 
   metrics:
     enabled: false
-    livenessProbe:
-      enabled: true
-      httpGet:
-        path: /health
-      timeoutSeconds: 5
-    readinessProbe:
-      enabled: true
-      httpGet:
-        path: /health
-      timeoutSeconds: 5
     port: http
     path: /metrics
 
