@@ -122,15 +122,41 @@ jobs:
           sudo apt-get install -y openjdk-21-jdk
           export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
           export PATH=$JAVA_HOME/bin:$PATH
+
           cd ./vaas-sdks/java/examples/VaasExample
+
           export SCAN_PATH=$(pwd)/build.gradle
           export CLIENT_ID=vaas
           export CLIENT_SECRET=$(minikube kubectl -- get secret -n vaas vaas-client-secret -o jsonpath="{.data.secret}" | base64 -d)
           export VAAS_URL=http://vaas
           export TOKEN_URL=http://vaas/auth/protocol/openid-connect/token
-          gradle fileScan
-          minikube kubectl -- logs -n vaas $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") | grep '"Verdict":"Clean","Url":null,"Source":"Cache"'
+
+          MAX_RETRIES=3
+          DELAY=5
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "▶ gradle fileScan attempt $i/$MAX_RETRIES"
+            if gradle fileScan; then
+              echo "✅ gradle fileScan succeeded"
+              break
+            fi
+
+            if [ "$i" -eq "$MAX_RETRIES" ]; then
+              echo "❌ gradle fileScan failed after $MAX_RETRIES attempts"
+              exit 1
+            fi
+
+            echo "⏳ retrying in ${DELAY}s..."
+            sleep $DELAY
+            DELAY=$((DELAY * 2))
+          done
+
+          minikube kubectl -- logs -n vaas \
+            $(minikube kubectl -- get pods -n vaas -l app.kubernetes.io/name=gateway -o jsonpath="{.items[0].metadata.name}") \
+            | grep '"Verdict":"Clean","Url":null,"Source":"Cache"'
+
           cd -
+
 
       - name: Push chart
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
