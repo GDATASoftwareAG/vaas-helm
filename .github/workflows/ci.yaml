@@ -80,11 +80,6 @@ jobs:
         with:
           version: "latest"
 
-      - name: Install Helm
-        uses: azure/setup-helm@v4
-        with:
-          version: v3.13.3
-
       - name: Enable ingress
         run: |
           minikube addons enable ingress
@@ -139,11 +134,11 @@ jobs:
 
       - name: Push chart
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: appany/helm-oci-chart-releaser@v0.4.2
+        uses: appany/helm-oci-chart-releaser@v0.5.0
         with:
           name: vaas
           repository: gdatasoftwareag/charts
-          tag: $CHART_VERSION
+          tag: ${{ env.CHART_VERSION }}
           path: vaas-helm/charts/vaas
           registry: ghcr.io
           registry_username: ${{ secrets.REGISTRY_USERNAME }}
