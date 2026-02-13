@@ -63,6 +63,32 @@ helm upgrade vaas oci://ghcr.io/gdatasoftwareag/charts/vaas -f values.yaml -n va
 ```
 <!-- end::InstallVaaSHelm[] -->
 
+<!-- tag::HardwareRequirements[] -->
+
+## Hardware Requirements
+
+Verdict-as-a-Service on premise requires the following:
+
+### Minimal requirements
+
+* **Kubernetes Version**: 1.27
+* Helm package manager
+* **Nodes**: 1 Linux x86-x64 node
+* **CPU cores**: 4
+* **Memory**: 3 GB
+* **Storage per node**: 2 GB, can be in memory (ephemeral)
+
+### Recommended requirements
+
+* **Kubernetes Version**: latest stable
+* Helm package manager
+* **Nodes**: 2 or more Linux x86-x64 nodes
+* **CPU cores**: (# of nodes) + (0.5 core * # parallel requests)
+* **Memory**: (# of cores GB) + (2 GB * # parallel requests)
+* **Storage per node**: (# of parallel requests) * (size of largest file to analyse)
+
+<!-- end::HardwareRequirements[] -->
+
 <!-- tag::GettingStarted[] -->
 
 ## Getting started with Verdict-as-a-Service on-premise
@@ -73,6 +99,7 @@ Tested prerequisites:
 * Minikube 1.32.0
 * Java 17
 * Vaas Java SDK 6.1.0
+
 
 ### Deploy Verdict-as-a-Service in a Minikube test-environment
 
