@@ -12,6 +12,6 @@ dependencies:
     condition: redis.enabled
     repository: oci://registry-1.docker.io/cloudpirates
   - name: mini-identity-provider
-    version: 1.0.0
+    version: 1.1.0
     condition: mini-identity-provider.enabled
     repository: oci://ghcr.io/gdatasoftwareag

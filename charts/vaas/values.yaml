@@ -27,11 +27,6 @@ mini-identity-provider:
               port: 8080
     tls: []
 
-  image:
-    repository: ghcr.io/gdatasoftwareag/vaas/mini-identity-provider
-    pullPolicy: Always
-    tag: "0.1.25"
-
   service:
     type: ClusterIP
     http:
@@ -42,7 +37,6 @@ mini-identity-provider:
 
   resources:
     limits:
-      cpu: 100m
       memory: 128Mi
     requests:
       cpu: 100m
