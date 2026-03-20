@@ -41,8 +41,15 @@ spec:
         - path:
             type: PathPrefix
             value: /swagger
-        # DEPRECATED: Functionality is moved to other routes and will be removed in the future
+    # DEPRECATED: Functionality is moved to other routes and will be removed in the future
+    - backendRefs:
+        - name: {{ include "gateway.fullname" . }}
+          port: {{ .Values.gateway.service.http.port }}
+          weight: 1
+      matches:
         - path:
             type: PathPrefix
             value: /upload
+      timeouts:
+        request: 0s # No timeout for legacy uploads
 {{- end }}
