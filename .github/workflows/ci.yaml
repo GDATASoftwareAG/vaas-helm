@@ -76,7 +76,7 @@ jobs:
           start args: --cpus 4 --memory 8192
 
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v4
+        uses: azure/setup-kubectl@v5
         with:
           version: "latest"
 
@@ -175,7 +175,7 @@ jobs:
         run: zip -r vaas-helm.zip vaas-helm/charts/vaas/
 
       - name: Github Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         with:
           tag_name: ${{steps.extract_tag.outputs.CHART_VERSION}}
